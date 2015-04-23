@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2013 for Web
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kartforandring", "kartforandring\kartforandring.csproj", "{B21C9AAA-AC6A-44A5-B2AF-722F1D99E99E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B21C9AAA-AC6A-44A5-B2AF-722F1D99E99E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B21C9AAA-AC6A-44A5-B2AF-722F1D99E99E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B21C9AAA-AC6A-44A5-B2AF-722F1D99E99E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B21C9AAA-AC6A-44A5-B2AF-722F1D99E99E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

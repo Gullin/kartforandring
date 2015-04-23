@@ -1,0 +1,28 @@
+﻿body {
+	font: 62.5% "Trebuchet MS", sans-serif;
+}
+
+a:visited {
+    color: blue;
+}
+
+#versionWrapper {
+    position: fixed;
+    top: 0em;
+    right: 1em;
+    color: inherit;
+    color: rgb(150,150,150);
+    line-height: 2.6em;
+}
+    #versionWrapper a {
+        text-decoration: underline;
+    }
+
+#copyrightWrapper {
+    position: fixed;
+    right: 1em;
+    bottom: 0em;
+    text-decoration: none;
+    color: rgb(160,160,160);
+    line-height: 2.6em;
+}
