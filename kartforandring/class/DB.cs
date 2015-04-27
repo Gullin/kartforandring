@@ -602,13 +602,13 @@ namespace kartforandring
             return dt;
         }
 
-        internal static DataTable GetBelagenhetsAdressDomain(string AdressOmr)
+        internal static DataTable GetBelagenhetsAdressDomain(string AdressOmrId)
         {
             string sql = "SELECT adressplats_id AS id, beladress AS value " +
                          "FROM gis_v_beladress";
-            if (!string.IsNullOrWhiteSpace(AdressOmr))
+            if (!string.IsNullOrWhiteSpace(AdressOmrId))
             {
-                sql += " WHERE adressomr = " + AdressOmr;
+                sql += " WHERE adressomrades_id = '" + AdressOmrId + "'";
             }
 
             DataTable dt = new DataTable();

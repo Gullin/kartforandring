@@ -727,9 +727,9 @@ namespace kartforandring
             return MakeForandrings(dt);
         }
 
-        public IList<DomainBelagenhetsAdress> GetDomains(string AdressOmr)
+        public IList<DomainBelagenhetsAdress> GetDomains(string AdressOmrId)
         {
-            DataTable dt = DB.GetBelagenhetsAdressDomain(AdressOmr);
+            DataTable dt = DB.GetBelagenhetsAdressDomain(AdressOmrId);
 
             return MakeForandrings(dt);
         }

@@ -135,12 +135,12 @@
                             if (data.source == 'list') {
                                 //Return url of all countries for optimization. 
                                 //This method is called for each row on the table and jTable caches options based on this url.
-                                return '/api/kartforandring/domainbelagenhetsadress?AdressOmr=0';
+                                return '/api/kartforandring/domainbelagenhetsadress?AdressOmrId=0';
                             }
 
                             //This code runs when user opens edit/create form or changes continental combobox on an edit/create form.
                             //data.source == 'edit' || data.source == 'create'
-                            return '/api/kartforandring/domainbelagenhetsadress?AdressOmr=' + data.dependedValues.AdressOmr;
+                            return '/api/kartforandring/domainbelagenhetsadress?AdressOmrId=' + data.dependedValues.AdressOmr;
                         },
                         list: false
                     },

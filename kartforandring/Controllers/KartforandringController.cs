@@ -95,20 +95,20 @@ namespace kartforandring.Controllers
         //throw new HttpResponseException(HttpStatusCode.NotFound);
 
         [HttpGet]
-        public jTableOptionBelagenhetsAdress DomainBelagenhetsAdress(string AdressOmr)
+        public jTableOptionBelagenhetsAdress DomainBelagenhetsAdress(string AdressOmrId)
         {
             jTableOptionBelagenhetsAdress jt = new jTableOptionBelagenhetsAdress();
             try
             {
                 DomainBelagenhetsAdress DomainBelagenhetsAdress = new DomainBelagenhetsAdress();
                 IList<DomainBelagenhetsAdress> DomainBelagenhetsAdresses = new List<DomainBelagenhetsAdress>();
-                if (string.IsNullOrWhiteSpace(AdressOmr))
+                if (string.IsNullOrWhiteSpace(AdressOmrId))
                 {
                     DomainBelagenhetsAdresses = DomainBelagenhetsAdress.GetDomains();
                 }
                 else
                 {
-                    DomainBelagenhetsAdresses = DomainBelagenhetsAdress.GetDomains(AdressOmr);
+                    DomainBelagenhetsAdresses = DomainBelagenhetsAdress.GetDomains(AdressOmrId);
                 }
                 jt.Result = "OK";
                 jt.Options = DomainBelagenhetsAdresses;
