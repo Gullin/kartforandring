@@ -9,6 +9,7 @@
     <link href="Styles/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" />
     <link href="Styles/page-UI-centering.css" rel="stylesheet" />
     <link href="Styles/page-UI-core.css" rel="stylesheet" />
+    <link href="Styles/page-UI-jTable.css" rel="stylesheet" />
 
     <link href="Scripts/jtable/themes/lightcolor/gray/jtable.css" rel="stylesheet" />
 

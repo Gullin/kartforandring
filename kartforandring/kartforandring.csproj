@@ -268,6 +268,7 @@
     <Content Include="Styles\jquery-ui-1.9.2.custom\css\smoothness\jquery-ui-1.9.2.custom.min.css" />
     <Content Include="Styles\page-UI-centering.css" />
     <Content Include="Styles\page-UI-core.css" />
+    <Content Include="Styles\page-UI-jTable.css" />
     <Content Include="Web.config" />
     <Content Include="Scripts\jquery-1.9.1.min.map" />
     <Content Include="Scripts\jtable\themes\metro\red\jtable.less" />
