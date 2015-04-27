@@ -564,7 +564,9 @@ namespace kartforandring
 
         internal static DataTable GetAdressOmradeDomain()
         {
-            string sql = "SELECT adressomrades_id AS id, adressomrade AS value FROM gis_v_adressomrade";
+            string sql = "SELECT adressomrades_id AS id, adressomrade AS value " +
+                         "FROM gis_v_adressomrade " +
+                         "ORDER BY adressomrade";
 
             DataTable dt = new DataTable();
             OleDbConnection con = GetOleDbConncection();
@@ -584,7 +586,9 @@ namespace kartforandring
 
         internal static DataTable GetBelagenhetsAdressDomain()
         {
-            string sql = "SELECT adressplats_id AS id, beladress AS value FROM gis_v_beladress";
+            string sql = "SELECT adressplats_id AS id, beladress AS value " +
+                         "FROM gis_v_beladress " +
+                         "ORDER BY beladress";
 
             DataTable dt = new DataTable();
             OleDbConnection con = GetOleDbConncection();
@@ -611,6 +615,8 @@ namespace kartforandring
                 sql += " WHERE adressomrades_id = '" + AdressOmrId + "'";
             }
 
+            sql += " ORDER BY beladress";
+
             DataTable dt = new DataTable();
             OleDbConnection con = GetOleDbConncection();
             OleDbCommand com = new OleDbCommand(sql, con);
@@ -629,7 +635,9 @@ namespace kartforandring
 
         internal static DataTable GetFastighetDomain()
         {
-            string sql = "SELECT fastighet_id AS id, fastighet AS value FROM gis_v_fastighetsregister";
+            string sql = "SELECT fastighet_id AS id, fastighet AS value " +
+                         "FROM gis_v_fastighetsregister " +
+                         "ORDER BY fastighet";
 
             DataTable dt = new DataTable();
             OleDbConnection con = GetOleDbConncection();
