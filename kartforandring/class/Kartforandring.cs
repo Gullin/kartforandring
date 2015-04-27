@@ -678,6 +678,8 @@ namespace kartforandring
 
     public class DomainAdressOmrade : jTableDomainBas
     {
+        public new string Value { get; set; }
+
         public IList<DomainAdressOmrade> GetDomains()
         {
             DataTable dt = DB.GetAdressOmradeDomain();
@@ -700,7 +702,7 @@ namespace kartforandring
 
             if (!Convert.IsDBNull(row["ID"]))
             {
-                Domain.Value = int.Parse(row["ID"].ToString());
+                Domain.Value = row["ID"].ToString();
                 Domain.DisplayText = row["VALUE"].ToString();
 
                 return Domain;
@@ -716,6 +718,8 @@ namespace kartforandring
 
     public class DomainBelagenhetsAdress : jTableDomainBas
     {
+        public new string Value { get; set; }
+
         public IList<DomainBelagenhetsAdress> GetDomains()
         {
             DataTable dt = DB.GetBelagenhetsAdressDomain();
@@ -745,7 +749,7 @@ namespace kartforandring
 
             if (!Convert.IsDBNull(row["ID"]))
             {
-                Domain.Value = int.Parse(row["ID"].ToString());
+                Domain.Value = row["ID"].ToString();
                 Domain.DisplayText = row["VALUE"].ToString();
 
                 return Domain;
