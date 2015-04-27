@@ -146,6 +146,7 @@
                     },
                     Fastighet: {
                         title: 'Fastighet',
+                        options: '/api/kartforandring/domainfastighet',
                         list: false
                     }
 
