@@ -564,23 +564,22 @@ namespace kartforandring
 
         internal static DataTable GetAdressOmradeDomain()
         {
-            //string sql = "SELECT id, value FROM kar_bestallning_init_tbd";
+            string sql = "SELECT adressomrades_id AS id, adressomrade AS value FROM gis_v_adressomrade";
 
-            //DataTable dt = new DataTable();
-            //OleDbConnection con = GetOleDbConncection();
-            //OleDbCommand com = new OleDbCommand(sql, con);
-            //OleDbDataReader dr;
+            DataTable dt = new DataTable();
+            OleDbConnection con = GetOleDbConncection();
+            OleDbCommand com = new OleDbCommand(sql, con);
+            OleDbDataReader dr;
 
-            //com.Connection.Open();
-            //dr = com.ExecuteReader();
+            com.Connection.Open();
+            dr = com.ExecuteReader();
 
-            //dt.Load(dr);
+            dt.Load(dr);
 
-            //dr.Close();
-            //dr.Dispose();
+            dr.Close();
+            dr.Dispose();
 
-            //return dt;
-            throw new NotImplementedException();
+            return dt;
         }
 
         internal static DataTable GetBelagenhetsAdressDomain()
