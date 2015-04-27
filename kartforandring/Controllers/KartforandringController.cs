@@ -102,7 +102,14 @@ namespace kartforandring.Controllers
             {
                 DomainBelagenhetsAdress DomainBelagenhetsAdress = new DomainBelagenhetsAdress();
                 IList<DomainBelagenhetsAdress> DomainBelagenhetsAdresses = new List<DomainBelagenhetsAdress>();
-                DomainBelagenhetsAdresses = DomainBelagenhetsAdress.GetDomains();
+                if (string.IsNullOrWhiteSpace(AdressOmr))
+                {
+                    DomainBelagenhetsAdresses = DomainBelagenhetsAdress.GetDomains();
+                }
+                else
+                {
+                    DomainBelagenhetsAdresses = DomainBelagenhetsAdress.GetDomains(AdressOmr);
+                }
                 jt.Result = "OK";
                 jt.Options = DomainBelagenhetsAdresses;
                 return jt;

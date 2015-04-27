@@ -584,23 +584,47 @@ namespace kartforandring
 
         internal static DataTable GetBelagenhetsAdressDomain()
         {
-            //string sql = "SELECT id, value FROM kar_bestallning_init_tbd";
+            string sql = "SELECT adressplats_id AS id, beladress AS value FROM gis_v_beladress";
 
-            //DataTable dt = new DataTable();
-            //OleDbConnection con = GetOleDbConncection();
-            //OleDbCommand com = new OleDbCommand(sql, con);
-            //OleDbDataReader dr;
+            DataTable dt = new DataTable();
+            OleDbConnection con = GetOleDbConncection();
+            OleDbCommand com = new OleDbCommand(sql, con);
+            OleDbDataReader dr;
 
-            //com.Connection.Open();
-            //dr = com.ExecuteReader();
+            com.Connection.Open();
+            dr = com.ExecuteReader();
 
-            //dt.Load(dr);
+            dt.Load(dr);
 
-            //dr.Close();
-            //dr.Dispose();
+            dr.Close();
+            dr.Dispose();
 
-            //return dt;
-            throw new NotImplementedException();
+            return dt;
+        }
+
+        internal static DataTable GetBelagenhetsAdressDomain(string AdressOmr)
+        {
+            string sql = "SELECT adressplats_id AS id, beladress AS value " +
+                         "FROM gis_v_beladress";
+            if (!string.IsNullOrWhiteSpace(AdressOmr))
+            {
+                sql += " WHERE adressomr = " + AdressOmr;
+            }
+
+            DataTable dt = new DataTable();
+            OleDbConnection con = GetOleDbConncection();
+            OleDbCommand com = new OleDbCommand(sql, con);
+            OleDbDataReader dr;
+
+            com.Connection.Open();
+            dr = com.ExecuteReader();
+
+            dt.Load(dr);
+
+            dr.Close();
+            dr.Dispose();
+
+            return dt;
         }
 
         internal static DataTable GetFastighetDomain()

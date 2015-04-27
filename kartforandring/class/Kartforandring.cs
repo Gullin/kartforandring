@@ -723,6 +723,13 @@ namespace kartforandring
             return MakeForandrings(dt);
         }
 
+        public IList<DomainBelagenhetsAdress> GetDomains(string AdressOmr)
+        {
+            DataTable dt = DB.GetBelagenhetsAdressDomain(AdressOmr);
+
+            return MakeForandrings(dt);
+        }
+        
         private IList<DomainBelagenhetsAdress> MakeForandrings(DataTable dt)
         {
             IList<DomainBelagenhetsAdress> list = new List<DomainBelagenhetsAdress>();
