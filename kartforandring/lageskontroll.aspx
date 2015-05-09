@@ -104,6 +104,19 @@
                         edit: false,
                         list: false
                     },
+                    LevelOfPosition: {
+                        width: '1%',
+                        sorting: false,
+                        display: function (post) {
+                            var cellValue = "";
+                            jQuery.each(post.record.LevelOfPosition, function (i, val) {
+                                cellValue += val;
+                            });
+                            return cellValue;
+                        },
+                        create: false,
+                        edit: false
+                    },
                     Diarie: {
                         title: 'Diarie',
                         width: '1%'
