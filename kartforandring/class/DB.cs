@@ -660,7 +660,15 @@ namespace kartforandring
 
             if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(password))
             {
-                connectionStr = ConfigurationManager.AppSettings["OracleOleDBConStringTOPO_SPECIAL"];
+                string appSettingConnection = ConfigurationManager.AppSettings["OracleOleDBConStringTOPO_SPECIAL"].ToString();
+                if (!string.IsNullOrWhiteSpace(appSettingConnection))
+                {
+                    connectionStr = ConfigurationManager.AppSettings["OracleOleDBConStringTOPO_SPECIAL"];
+                }
+                else
+                {
+                    throw new Exception("Anslutningsuppgifter till databas existerar ej");
+                }
             }
             else
             {
