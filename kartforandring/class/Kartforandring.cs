@@ -413,6 +413,7 @@ namespace kartforandring
     {
         public int Fid { get; set; }
         public string IsGeom { get; set; }
+        public char[] LevelOfPosition { get; set; }
         public int? KarObj { get; set; }
         public string KarObjText { get; set; }
         public int? KarTyp { get; set; }
@@ -462,6 +463,28 @@ namespace kartforandring
                 Andring.Fid = int.Parse(row["FID"].ToString());
                 Andring.Fastighet = Convert.IsDBNull(row["BEV_PLATS_FASTIGHET"]) ? (int?)null : int.Parse(row["BEV_PLATS_FASTIGHET"].ToString());
                 Andring.IsGeom = Convert.IsDBNull(row["IS_GEOM"]) ? null : row["IS_GEOM"].ToString();
+
+                // Består av 5 tecken
+                // Position 1 = Övrigt
+                // Position 2 = Adressområde
+                // Position 3 = Fastighet
+                // Position 4 = Adress
+                // Position 5 = Objektets
+                if (!Convert.IsDBNull(row["LEVEL_OF_POSITION"]))
+                {
+                    string levelOfPosition = row["LEVEL_OF_POSITION"].ToString();
+                    if(levelOfPosition.Length != 5)
+                    {
+                        throw new Exception("Antalet tecken som signalerar kvalitet och status i positionering är fel.");
+                    }
+                    else
+                        Andring.LevelOfPosition = levelOfPosition.ToCharArray();
+                }
+                else
+                {
+                    Andring.LevelOfPosition = new char[] { '0', '0', '0', '0', '0' };
+                }
+
                 Andring.KarObj = Convert.IsDBNull(row["KAR_OBJ"]) ? (int?)null : int.Parse(row["KAR_OBJ"].ToString());
                 Andring.KarObjText = Convert.IsDBNull(row["KAR_OBJ_TEXT"]) ? null : row["KAR_OBJ_TEXT"].ToString();
                 Andring.KarTyp = Convert.IsDBNull(row["KAR_TYP"]) ? (int?)null : int.Parse(row["KAR_TYP"].ToString());
@@ -589,6 +612,28 @@ namespace kartforandring
                 Andring.Fid = int.Parse(row["FID"].ToString());
                 Andring.Fastighet = Convert.IsDBNull(row["BEV_PLATS_FASTIGHET"]) ? (int?)null : int.Parse(row["BEV_PLATS_FASTIGHET"].ToString());
                 Andring.IsGeom = Convert.IsDBNull(row["IS_GEOM"]) ? null : row["IS_GEOM"].ToString();
+
+                // Består av 5 tecken
+                // Position 1 = Övrigt
+                // Position 2 = Adressområde
+                // Position 3 = Fastighet
+                // Position 4 = Adress
+                // Position 5 = Objektets
+                if (!Convert.IsDBNull(row["LEVEL_OF_POSITION"]))
+                {
+                    string levelOfPosition = row["LEVEL_OF_POSITION"].ToString();
+                    if (levelOfPosition.Length != 5)
+                    {
+                        throw new Exception("Antalet tecken som signalerar kvalitet och status i positionering är fel.");
+                    }
+                    else
+                        Andring.LevelOfPosition = levelOfPosition.ToCharArray();
+                }
+                else
+                {
+                    Andring.LevelOfPosition = new char[] { '0', '0', '0', '0', '0' };
+                }
+
                 Andring.KarObj = Convert.IsDBNull(row["KAR_OBJ"]) ? (int?)null : int.Parse(row["KAR_OBJ"].ToString());
                 Andring.KarObjText = Convert.IsDBNull(row["KAR_OBJ_TEXT"]) ? null : row["KAR_OBJ_TEXT"].ToString();
                 Andring.KarTyp = Convert.IsDBNull(row["KAR_TYP"]) ? (int?)null : int.Parse(row["KAR_TYP"].ToString());

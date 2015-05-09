@@ -15,6 +15,7 @@ namespace kartforandring
         {
             string sql = "SELECT f.fid AS fid, " +
                          "       NVL2(f.geom, 1, 0) AS is_geom, " +
+                         "       NVL2(f.bev_plats_ovrigt, 1, 0) || NVL2(f.bev_plats_adressomr, 1, 0) || NVL2(f.bev_plats_fastighet, 1, 0) || NVL2(f.bev_plats_adress, 1, 0) || NVL2(f.geom, 1, 0) AS level_of_position, " +
                          "       f.kar_obj AS kar_obj, obj.value AS kar_obj_text, " +
                          "       f.kar_typ AS kar_typ, typ.value AS kar_typ_text, " +
                          "       f.user_modified AS user_modified, f.date_modified AS date_modified, " +
@@ -326,7 +327,9 @@ namespace kartforandring
 
         private static string sqlSelectBygglovsbeslut(string filter)
         {
-            string sql = "SELECT f.fid AS fid, NVL2(f.geom, 1, 0) AS is_geom, f.kar_obj AS kar_obj, obj.value AS kar_obj_text, " +
+            string sql = "SELECT f.fid AS fid, NVL2(f.geom, 1, 0) AS is_geom, " +
+                         "       NVL2(f.bev_plats_ovrigt, 1, 0) || NVL2(f.bev_plats_adressomr, 1, 0) || NVL2(f.bev_plats_fastighet, 1, 0) || NVL2(f.bev_plats_adress, 1, 0) || NVL2(f.geom, 1, 0) AS level_of_position, " +
+                         "       f.kar_obj AS kar_obj, obj.value AS kar_obj_text, " +
                          "       f.kar_typ AS kar_typ, typ.value AS kar_typ_text, " +
                          "       f.user_modified AS user_modified, f.date_modified AS date_modified, f.bev_notering AS bev_notering, " +
                          "       f.bev_beskrivning AS bev_beskrivning, f.bev_inkommet AS bev_inkommet, f.bev_paborjat AS bev_paborjat, " +
