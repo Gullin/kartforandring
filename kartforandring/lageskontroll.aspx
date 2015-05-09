@@ -150,63 +150,6 @@
                         options: '/api/kartforandring/domainfastighet',
                         list: false
                     }
-
-                    //Name: {
-                    //    title: 'Name',
-                    //    width: '23%'
-                    //},
-                    //EmailAddress: {
-                    //    title: 'Email address',
-                    //    list: false
-                    //},
-                    //Password: {
-                    //    title: 'User Password',
-                    //    type: 'password',
-                    //    list: false
-                    //},
-                    //Gender: {
-                    //    title: 'Gender',
-                    //    width: '13%',
-                    //    options: { 'M': 'Male', 'F': 'Female' }
-                    //},
-                    //CityId: {
-                    //    title: 'City',
-                    //    width: '12%',
-                    //    options: '/PagingAndSorting.aspx/GetCityOptions'
-                    //},
-                    //BirthDate: {
-                    //    title: 'Birth date',
-                    //    width: '15%',
-                    //    type: 'date',
-                    //    displayFormat: 'yy-mm-dd'
-                    //},
-                    //Education: {
-                    //    title: 'Education',
-                    //    list: false,
-                    //    type: 'radiobutton',
-                    //    options: { '1': 'Primary school', '2': 'High school', '3': 'University' }
-                    //},
-                    //About: {
-                    //    title: 'About this person',
-                    //    type: 'textarea',
-                    //    list: false
-                    //},
-                    //IsActive: {
-                    //    title: 'Status',
-                    //    width: '12%',
-                    //    type: 'checkbox',
-                    //    values: { 'false': 'Passive', 'true': 'Active' },
-                    //    defaultValue: 'true'
-                    //},
-                    //RecordDate: {
-                    //    title: 'Record date',
-                    //    width: '15%',
-                    //    type: 'date',
-                    //    displayFormat: 'dd.mm.yy',
-                    //    create: false,
-                    //    edit: false,
-                    //    sorting: false //This column is not sortable!
-                    //}
                 }
             });
 
