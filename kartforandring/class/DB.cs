@@ -126,8 +126,6 @@ namespace kartforandring
 
         private static DataTable GetData(string sql)
         {
-            //string connectionStr = ConfigurationManager.AppSettings["OracleOleDBConStringTOPO_SPECIAL"];
-
             DataTable dt = new DataTable();
             OleDbConnection con = GetOleDbConncection();
             OleDbCommand com = new OleDbCommand(sql, con);
@@ -214,7 +212,6 @@ namespace kartforandring
             {
                 throw;
             }
-
         }
 
         private static DataTable UpdateData(Bygglovsbeslut lageskontroll)
@@ -287,7 +284,6 @@ namespace kartforandring
             {
                 throw;
             }
-
         }
 
         private static void DeleteLogicalData(string sql)
@@ -314,7 +310,6 @@ namespace kartforandring
 
         private static string sqlDeleteLogicalKartforandring(string where)
         {
-
             if (!string.IsNullOrEmpty(where))
             {
                 where = " WHERE " + where;
@@ -327,12 +322,10 @@ namespace kartforandring
                          where;
 
             return sql;
-
         }
 
         private static string sqlSelectBygglovsbeslut(string filter)
         {
-
             string sql = "SELECT f.fid AS fid, NVL2(f.geom, 1, 0) AS is_geom, f.kar_obj AS kar_obj, obj.value AS kar_obj_text, " +
                          "       f.kar_typ AS kar_typ, typ.value AS kar_typ_text, " +
                          "       f.user_modified AS user_modified, f.date_modified AS date_modified, f.bev_notering AS bev_notering, " +
