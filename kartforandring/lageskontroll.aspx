@@ -108,11 +108,30 @@
                         width: '1%',
                         sorting: false,
                         display: function (post) {
-                            var cellValue = "";
-                            jQuery.each(post.record.LevelOfPosition, function (i, val) {
-                                cellValue += val;
+                            var imgSuffix = "";
+                            var title = "";
+                            var levelOfPositionInText = [" * Platsbestämd i text",
+                                                         " * Adressområde",
+                                                         " * Fastighet",
+                                                         " * Adressplats",
+                                                         " * Egen geometri"];
+                            levelOfPositionIdx = 0;
+                            $.each(post.record.LevelOfPosition, function (i, val) {
+                                imgSuffix += val;
+                                if (val == 1) {
+                                    title += "\n" + levelOfPositionInText[levelOfPositionIdx];
+                                }
+                                levelOfPositionIdx++;
                             });
-                            return cellValue;
+                            if (title != "") {
+                                title = "Lägesbunden genom\n" + title;
+                            } else {
+                                title = "Ingen lägesbestämning";
+                            }
+                            var $img = $("<img>");
+                            $img.attr("src", "pic/positionNeedle/positionNeedle_" + imgSuffix + ".png");
+                            $img.attr("title", title);
+                            return $img;
                         },
                         create: false,
                         edit: false
