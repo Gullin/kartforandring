@@ -451,7 +451,8 @@ namespace kartforandring
                          "    f.bev_plats_adress = " + adress + skilje +
                          "    f.bev_plats_fastighet = " + fastighet + skilje +
                          "    f.bev_plats_ovrigt = " + platsovrigt + skilje +
-                         "    f.bev_bygglov_lag_best = " + lageskontrollbestallning;
+                         "    f.bev_bygglov_lag_best = " + lageskontrollbestallning + " " +
+                         "WHERE f.fid = " + lageskontroll.Fid;
 
             return sql;
         }
