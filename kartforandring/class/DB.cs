@@ -551,6 +551,8 @@ namespace kartforandring
             dt.Columns.Add(cl);
             cl = new DataColumn("BEV_BYGGLOV_LAG_BEST_TEXT", System.Type.GetType("System.String"));
             dt.Columns.Add(cl);
+            cl = new DataColumn("LEVEL_OF_POSITION", System.Type.GetType("System.String"));
+            dt.Columns.Add(cl);
 
             return dt;
         }
