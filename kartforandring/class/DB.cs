@@ -578,6 +578,8 @@ namespace kartforandring
             dr.Close();
             dr.Dispose();
 
+            dt = domainAddEmptyRowFirst(dt);
+
             return dt;
         }
 
@@ -599,6 +601,8 @@ namespace kartforandring
 
             dr.Close();
             dr.Dispose();
+
+            dt = domainAddEmptyRowFirst(dt);
 
             return dt;
         }
@@ -627,6 +631,8 @@ namespace kartforandring
             dr.Close();
             dr.Dispose();
 
+            dt = domainAddEmptyRowFirst(dt);
+
             return dt;
         }
 
@@ -648,6 +654,23 @@ namespace kartforandring
 
             dr.Close();
             dr.Dispose();
+
+            dt = domainAddEmptyRowFirst(dt);
+
+            return dt;
+        }
+
+
+        /// <summary>
+        /// Inserted empty row for possibility to not have value in a drop list.
+        /// No key value is -1
+        /// </summary>
+        /// <param name="dt">DataTable with column named ID</param>
+        internal static DataTable domainAddEmptyRowFirst(DataTable dt)
+        {
+            DataRow emptyDr = dt.NewRow();
+            emptyDr["ID"] = -1;
+            dt.Rows.InsertAt(emptyDr, 0);
 
             return dt;
         }
