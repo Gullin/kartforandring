@@ -148,7 +148,8 @@ namespace kartforandring
             try
             {
                 DataTable dt = new DataTable();
-
+                lageskontroll.tmpGuidKey = Guid.NewGuid();
+                
                 OleDbConnection con = GetOleDbConncection();
                 OleDbCommand com = new OleDbCommand(sqlInsertLageskontroll(lageskontroll), con);
 
@@ -156,11 +157,26 @@ namespace kartforandring
                 int affectedRows = com.ExecuteNonQuery();
                 if (affectedRows > 0)
                 {
+                    // Gets newly created database key instead of temporary guid-key
+                    // Throw exception if no match for post and the given guid
+                    DataTable tmpDtFid = new DataTable();
+                    com.CommandText = "SELECT fid FROM kar_samling WHERE guid_tmp = '" + lageskontroll.tmpGuidKey.ToString().Replace("-", "") + "'";
+                    OleDbDataReader tmpDrFid;   
+                    tmpDrFid = com.ExecuteReader();
+                    tmpDtFid.Load(tmpDrFid);
+                    if (tmpDtFid.Rows.Count != 1) // Check if the DataTable returns any data from database
+                    {
+                        throw new Exception("LKR-00005", new Exception("Kunde inte erhålla databasnyckel vid skapande av ny post (temp-ID: " + lageskontroll.tmpGuidKey.ToString() + ")."));
+                    } 
+
+
                     dt = createEmptyBygglovsbesllutsTable();
 
                     DataRow dr = dt.NewRow();
 
-                    dr["FID"] = string.IsNullOrWhiteSpace(lageskontroll.Fid.ToString()) ? DBNull.Value : (object)lageskontroll.Fid;
+                    dr["FID"] = tmpDtFid.Rows[0]["FID"];
+                    tmpDrFid.Close();
+                    tmpDrFid.Dispose();
                     dr["IS_GEOM"] = string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? DBNull.Value : (object)lageskontroll.IsGeom;
                     dr["KAR_OBJ"] = string.IsNullOrWhiteSpace(lageskontroll.KarObj.ToString()) ? DBNull.Value : (object)lageskontroll.KarObj;
                     dr["KAR_OBJ_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.KarObjText) ? DBNull.Value : (object)lageskontroll.KarObjText;
@@ -406,7 +422,8 @@ namespace kartforandring
                                                   "bev_plats_ovrigt" + skilje +
                                                   "bev_bygglov_diarie" + skilje +
                                                   "bev_bygglov_lag" + skilje +
-                                                  "bev_bygglov_lag_best" +
+                                                  "bev_bygglov_lag_best" + skilje +
+                                                  "guid_tmp" +
                                                   ") VALUES (" +
                                                              "100" + skilje +
                                                              "1020" + skilje +
@@ -419,7 +436,8 @@ namespace kartforandring
                                                              platsovrigt + skilje +
                                                              diarie + skilje +
                                                              "10" + skilje +
-                                                             lageskontrollbestallning +
+                                                             lageskontrollbestallning + skilje +
+                                                             "'" + lageskontroll.tmpGuidKey.ToString().Replace("-","") + "'" +
                                                              ")";
 
             return sql;

@@ -412,6 +412,7 @@ namespace kartforandring
     public class ForandringarBas
     {
         public int Fid { get; set; }
+        public Guid tmpGuidKey { get; set; }
         public string IsGeom { get; set; }
         public char[] LevelOfPosition { get; set; }
         public int? KarObj { get; set; }
