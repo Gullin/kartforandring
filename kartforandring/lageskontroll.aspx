@@ -76,6 +76,21 @@
                 formCreated: function (event, data) {
                     var $form = data.form;
                     $form.find('[name="Diarie"]').attr('placeholder', 'ÅÅÅÅ.#');
+
+                    var $spanRequire = $('<span>');
+                    $spanRequire.css({
+                        "color": "red",
+                        "font-weight": "bold",
+                        "margin": "0px 1em",
+                        "cursor": "help"
+                    });
+                    $spanRequire.attr("title","Värde krävs!");
+                    $spanRequire.text('*');
+
+                    var diarieValue = $form.find('[name="Diarie"]');
+                    var arendeValue = $form.find('[name="Beskrivning"]');
+                    diarieValue.after($spanRequire.clone());
+                    arendeValue.after($spanRequire.clone());
                 },
                 formSubmitting: function (event, data) {
                     if (data.formType == "create") {
