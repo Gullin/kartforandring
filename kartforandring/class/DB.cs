@@ -541,7 +541,7 @@ namespace kartforandring
 
         internal static DataTable GetLageskontrollOrderingDomain()
         {
-            string sql = "SELECT id, value FROM kar_bestallning_init_tbd";
+            string sql = "SELECT id, value FROM kar_bestallning_init_tbd ORDER BY value DESC";
 
             DataTable dt = new DataTable();
             OleDbConnection con = GetOleDbConncection();
