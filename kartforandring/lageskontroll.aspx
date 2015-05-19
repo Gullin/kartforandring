@@ -74,7 +74,6 @@
                     }
                 },
                 formCreated: function (event, data) {
-                    console.log("formCreated");
                     var $form = data.form;
                     $form.find('[name="Diarie"]').attr('placeholder', 'ÅÅÅÅ.#');
                 },
@@ -84,6 +83,7 @@
 
                         var diarieValue = $form.find('[name="Diarie"]').val();
                         var arendeValue = $form.find('[name="Beskrivning"]').val();
+                        var bestallningValue = $form.find('[name="LageskontrollBestallning"]').val();
 
                         var diariePattern = /^(19\d{2}\.\d{1,4})$|^(20\d{2}\.\d{1,4})$/;
                         if (!diariePattern.test(diarieValue)) {
@@ -91,8 +91,13 @@
                             return false;
                         }
 
-                        if ($form.find('[name="Beskrivning"]').val() == "") {
+                        if (arendeValue == "") {
                             alert("Ärendemening saknas i fält Ärende!");
+                            return false;
+                        }
+
+                        if (bestallningValue == "") {
+                            alert("Beställningsinitierar saknas i fältet Beställning!");
                             return false;
                         }
                     }
