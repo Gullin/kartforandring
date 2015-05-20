@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace kartforandring
@@ -150,11 +151,30 @@ namespace kartforandring
                 DataTable dt = new DataTable();
                 lageskontroll.tmpGuidKey = Guid.NewGuid();
                 
+                // Kontrollera nycklar för adressområde, adressplats och fastighet. Sätts till null om ej stämmer
+                string regexpPatternGuid = @"^[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$";
+                string regexpPatternFastighet = @"^\d{9}$";
+                if(!Regex.IsMatch(lageskontroll.AdressOmr, regexpPatternGuid))
+                {
+                    lageskontroll.AdressOmr = null;
+                }
+                if (!Regex.IsMatch(lageskontroll.Adress, regexpPatternGuid))
+                {
+                    lageskontroll.Adress = null;
+                }
+                if (!Regex.IsMatch(lageskontroll.Fastighet.ToString(), regexpPatternFastighet))
+                {
+                    lageskontroll.Fastighet = null;
+                }
+
                 OleDbConnection con = GetOleDbConncection();
                 OleDbCommand com = new OleDbCommand(sqlInsertLageskontroll(lageskontroll), con);
 
+                // Inserts row
                 com.Connection.Open();
                 int affectedRows = com.ExecuteNonQuery();
+
+                // Om rad har lagrats, skapa returneringsvärde för raden att presenteras i klienten
                 if (affectedRows > 0)
                 {
                     // Gets newly created database key instead of temporary guid-key
