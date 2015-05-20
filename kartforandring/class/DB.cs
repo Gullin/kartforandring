@@ -180,7 +180,7 @@ namespace kartforandring
                     // Gets newly created database key instead of temporary guid-key
                     // Throw exception if no match for post and the given guid
                     DataTable tmpDtFid = new DataTable();
-                    com.CommandText = "SELECT fid FROM kar_samling WHERE guid_tmp = '" + lageskontroll.tmpGuidKey.ToString().Replace("-", "") + "'";
+                    com.CommandText = "SELECT fid, bev_inkommet FROM kar_samling WHERE guid_tmp = '" + lageskontroll.tmpGuidKey.ToString().Replace("-", "") + "'";
                     OleDbDataReader tmpDrFid;   
                     tmpDrFid = com.ExecuteReader();
                     tmpDtFid.Load(tmpDrFid);
@@ -194,9 +194,13 @@ namespace kartforandring
 
                     DataRow dr = dt.NewRow();
 
-                    dr["FID"] = tmpDtFid.Rows[0]["FID"];
+                    lageskontroll.Fid = int.Parse(tmpDtFid.Rows[0]["FID"].ToString());
+                    lageskontroll.Inkommit = Convert.IsDBNull(tmpDtFid.Rows[0]["BEV_INKOMMET"]) ? (DateTime?)null : DateTime.Parse(tmpDtFid.Rows[0]["BEV_INKOMMET"].ToString());
+
                     tmpDrFid.Close();
                     tmpDrFid.Dispose();
+
+                    dr["FID"] = string.IsNullOrWhiteSpace(lageskontroll.Fid.ToString()) ? DBNull.Value : (object)lageskontroll.Fid;
                     dr["IS_GEOM"] = string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? DBNull.Value : (object)lageskontroll.IsGeom;
                     dr["KAR_OBJ"] = string.IsNullOrWhiteSpace(lageskontroll.KarObj.ToString()) ? DBNull.Value : (object)lageskontroll.KarObj;
                     dr["KAR_OBJ_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.KarObjText) ? DBNull.Value : (object)lageskontroll.KarObjText;
@@ -431,7 +435,8 @@ namespace kartforandring
             fastighet = string.IsNullOrEmpty(lageskontroll.Fastighet.ToString()) ? "NULL" : lageskontroll.Fastighet.ToString();
             lageskontrollbestallning = string.IsNullOrEmpty(lageskontroll.LageskontrollBestallning.ToString()) ? "NULL" : lageskontroll.LageskontrollBestallning.ToString();
 
-            string sql = "INSERT INTO topo_special.kar_samling (kar_obj" + skilje +
+            string sql = "INSERT INTO topo_special.kar_samling (" +
+                                                  "kar_obj" + skilje +
                                                   "kar_typ" + skilje +
                                                   "bev_beskrivning" + skilje +
                                                   "bev_notering" + skilje +
