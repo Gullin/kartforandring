@@ -117,6 +117,9 @@
                         }
                     }
                 },
+                recordAdded: function (event, data) {
+                    $('#LageskontrollTableContainer').jtable('reload');
+                },
                 fields: {
                     Fid: {
                         key: true,
