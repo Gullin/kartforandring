@@ -283,6 +283,7 @@
     <Content Include="Scripts\jtable\themes\metro\red\jtable.min.css" />
     <Content Include="Scripts\jtable\themes\metro\red\loading.gif" />
     <None Include="Settings.config" />
+    <Content Include="Scripts\lageskontroll.js" />
     <Content Include="Styles\jquery-ui-1.9.2.custom\css\smoothness\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Styles\jquery-ui-1.9.2.custom\css\smoothness\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Styles\jquery-ui-1.9.2.custom\css\smoothness\images\ui-bg_glass_55_fbf9ee_1x400.png" />
