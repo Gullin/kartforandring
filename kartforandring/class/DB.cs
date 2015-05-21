@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -200,6 +201,25 @@ namespace kartforandring
                     tmpDrFid.Close();
                     tmpDrFid.Dispose();
 
+                    // Redefine level of positioning of object
+                    StringBuilder levelOfPosition = new StringBuilder("00000");
+                    string levelOfPositionPart = string.IsNullOrWhiteSpace(lageskontroll.PlatsOvrigt) ? "0" : "1";
+                    levelOfPosition.Remove(0, 1);
+                    levelOfPosition.Insert(0, levelOfPositionPart);
+                    levelOfPositionPart = string.IsNullOrWhiteSpace(lageskontroll.AdressOmr) ? "0" : "1";
+                    levelOfPosition.Remove(1, 1);
+                    levelOfPosition.Insert(1, levelOfPositionPart);
+                    levelOfPositionPart = string.IsNullOrWhiteSpace(lageskontroll.Fastighet.ToString()) ? "0" : "1";
+                    levelOfPosition.Remove(2, 1);
+                    levelOfPosition.Insert(2, levelOfPositionPart);
+                    levelOfPositionPart = string.IsNullOrWhiteSpace(lageskontroll.Adress) ? "0" : "1";
+                    levelOfPosition.Remove(3, 1);
+                    levelOfPosition.Insert(3, levelOfPositionPart);
+                    levelOfPositionPart = string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? "0" : "1";
+                    levelOfPosition.Remove(4, 1);
+                    levelOfPosition.Insert(4, levelOfPositionPart);
+
+                    // Fill returning row
                     dr["FID"] = string.IsNullOrWhiteSpace(lageskontroll.Fid.ToString()) ? DBNull.Value : (object)lageskontroll.Fid;
                     dr["IS_GEOM"] = string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? DBNull.Value : (object)lageskontroll.IsGeom;
                     dr["KAR_OBJ"] = string.IsNullOrWhiteSpace(lageskontroll.KarObj.ToString()) ? DBNull.Value : (object)lageskontroll.KarObj;
@@ -236,6 +256,7 @@ namespace kartforandring
                     dr["BEV_BYGGLOV_UTS_BEST_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.UtsattningBestallningText) ? DBNull.Value : (object)lageskontroll.UtsattningBestallningText;
                     dr["BEV_BYGGLOV_LAG_BEST"] = string.IsNullOrWhiteSpace(lageskontroll.LageskontrollBestallning.ToString()) ? DBNull.Value : (object)lageskontroll.LageskontrollBestallning;
                     dr["BEV_BYGGLOV_LAG_BEST_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.LageskontrollBestallningText) ? DBNull.Value : (object)lageskontroll.LageskontrollBestallningText;
+                    dr["LEVEL_OF_POSITION"] = levelOfPosition.ToString();
 
                     dt.Rows.Add(dr);
                 }
@@ -272,6 +293,25 @@ namespace kartforandring
 
                     DataRow dr = dt.NewRow();
 
+                    // Redefine level of positioning of object
+                    StringBuilder levelOfPosition = new StringBuilder("00000");
+                    string levelOfPositionPart = string.IsNullOrWhiteSpace(lageskontroll.PlatsOvrigt) ? "0" : "1";
+                    levelOfPosition.Remove(0, 1);
+                    levelOfPosition.Insert(0, levelOfPositionPart);
+                    levelOfPositionPart = string.IsNullOrWhiteSpace(lageskontroll.AdressOmr) ? "0" : "1";
+                    levelOfPosition.Remove(1, 1);
+                    levelOfPosition.Insert(1, levelOfPositionPart);
+                    levelOfPositionPart = string.IsNullOrWhiteSpace(lageskontroll.Fastighet.ToString()) ? "0" : "1";
+                    levelOfPosition.Remove(2, 1);
+                    levelOfPosition.Insert(2, levelOfPositionPart);
+                    levelOfPositionPart = string.IsNullOrWhiteSpace(lageskontroll.Adress) ? "0" : "1";
+                    levelOfPosition.Remove(3, 1);
+                    levelOfPosition.Insert(3, levelOfPositionPart);
+                    levelOfPositionPart = string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? "0" : "1";
+                    levelOfPosition.Remove(4, 1);
+                    levelOfPosition.Insert(4, levelOfPositionPart);
+
+                    // Fill returning row
                     dr["FID"] = string.IsNullOrWhiteSpace(lageskontroll.Fid.ToString()) ? DBNull.Value : (object)lageskontroll.Fid;
                     dr["IS_GEOM"] = string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? DBNull.Value : (object)lageskontroll.IsGeom;
                     dr["KAR_OBJ"] = string.IsNullOrWhiteSpace(lageskontroll.KarObj.ToString()) ? DBNull.Value : (object)lageskontroll.KarObj;
@@ -308,6 +348,7 @@ namespace kartforandring
                     dr["BEV_BYGGLOV_UTS_BEST_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.UtsattningBestallningText) ? DBNull.Value : (object)lageskontroll.UtsattningBestallningText;
                     dr["BEV_BYGGLOV_LAG_BEST"] = string.IsNullOrWhiteSpace(lageskontroll.LageskontrollBestallning.ToString()) ? DBNull.Value : (object)lageskontroll.LageskontrollBestallning;
                     dr["BEV_BYGGLOV_LAG_BEST_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.LageskontrollBestallningText) ? DBNull.Value : (object)lageskontroll.LageskontrollBestallningText;
+                    dr["LEVEL_OF_POSITION"] = levelOfPosition.ToString();
 
                     dt.Rows.Add(dr);
                 }
