@@ -30,7 +30,22 @@
                     });
                 });
             },
-            updateAction: '/api/kartforandring/uppdateralageskontroll',
+            updateAction: function (postData) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url: '/api/kartforandring/uppdateralageskontroll',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postData,
+                        success: function (data) {
+                            $dfd.resolve(data);
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            },
             deleteAction: function (postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
