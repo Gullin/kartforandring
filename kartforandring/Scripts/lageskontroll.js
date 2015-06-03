@@ -6,7 +6,7 @@
     $('#LageskontrollTableContainer').jtable({
         title: 'Bygglov med lägeskontroll',
         sorting: true, //Enables sorting
-        defaultSorting: 'LageskontrollBestallningText DESC', //Optional. Default sorting on first load.
+        defaultSorting: 'LageskontrollBestallningText DESC, Inkommit ASC, Diarie ASC', //Optional. Default sorting on first load.
         ajaxSettings: {
             type: 'GET',
             dataType: 'json',
