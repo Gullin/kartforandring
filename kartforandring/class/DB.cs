@@ -417,7 +417,7 @@ namespace kartforandring
                          "       f.bev_utforare AS bev_utforare, f.bev_avslutat AS bev_avslutat, " +
                          "       f.bev_plats_adress AS bev_plats_adress, adr.beladress AS bev_plats_adress_text, " +
                          "       f.bev_plats_fastighet AS bev_plats_fastighet, NVL2(fr.trakt, fr.trakt || ' ' || fr.fbetnr, NULL) AS bev_plats_fastighet_text, " +
-                         "       f.bev_plats_adressomr AS bev_plats_adressomr, adromr.adressomrade AS bev_plats_adressomr_text, " +
+                         "       NVL(f.bev_plats_adressomr, adromradr.adressomrades_id) AS bev_plats_adressomr, adromr.adressomrade AS bev_plats_adressomr_text, " +
                          "       f.bev_plats_ovrigt AS bev_plats_ovrigt, " +
                          "       f.bev_bygglov_diarie AS bev_bygglov_diarie, f.bev_bygglov_uts AS bev_bygglov_uts, bev_uts.value AS bev_bygglov_uts_text, " +
                          "       f.bev_bygglov_lag AS bev_bygglov_lag, bev_lag.value AS bev_bygglov_lag_text, " +
@@ -432,6 +432,9 @@ namespace kartforandring
                          "       tefat.fir_fastigh fr, " +
                          "       lkr_gis.gis_v_adressomrade adromr, " +
                          "       lkr_gis.gis_v_beladress adr, " +
+                         "      (SELECT a.adressomrades_id AS adressomrades_id, b.adressplats_id AS adressplats_id " +
+                         "       FROM lkr_gis.gis_v_adressomrade a, lkr_gis.gis_v_beladress b " +
+                         "       WHERE UPPER(a.adressomrade) = UPPER(b.adressomr)) adromradr, " +
                          "       kar_bygglov_bev_tbd bev_uts, " +
                          "       kar_bygglov_bev_tbd bev_lag, " +
                          "       kar_bygglov_bev_tbd bev_attefall, " +
@@ -446,6 +449,7 @@ namespace kartforandring
                          "AND    f.bev_plats_fastighet = fr.fnr(+) " +
                          "AND    f.bev_plats_adress = adr.adressplats_id(+) " +
                          "AND    f.bev_plats_adressomr = adromr.adressomrades_id(+) " +
+                         "AND    f.bev_plats_adress = adromradr.adressplats_id(+) " +
                          "AND    f.bev_bygglov_uts = bev_uts.id(+) " +
                          "AND    f.bev_bygglov_lag = bev_lag.id(+) " +
                          "AND    f.bev_bygglov_attefall = bev_attefall.id(+) " +
