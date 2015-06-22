@@ -467,6 +467,10 @@ namespace kartforandring
         {
             string skilje = ", ";
 
+            string geometryColumn = lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? "geom" + skilje : "";
+            string geometry = lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? createSdoGeometryFromRelationalData(lageskontroll) + skilje : "";
+
+
             // Hanterar NULL för Oracle
             string beskrivning, notering, adressomr, adress, platsovrigt, diarie, fastighet, lageskontrollbestallning;
 
@@ -493,6 +497,7 @@ namespace kartforandring
                                                   "bev_bygglov_diarie" + skilje +
                                                   "bev_bygglov_lag" + skilje +
                                                   "bev_bygglov_lag_best" + skilje +
+                                                  geometryColumn +
                                                   "guid_tmp" +
                                                   ") VALUES (" +
                                                              "100" + skilje +
@@ -507,6 +512,7 @@ namespace kartforandring
                                                              diarie + skilje +
                                                              "10" + skilje +
                                                              lageskontrollbestallning + skilje +
+                                                             geometry +
                                                              "'" + lageskontroll.tmpGuidKey.ToString().Replace("-","") + "'" +
                                                              ")";
 
@@ -516,6 +522,9 @@ namespace kartforandring
         private static string sqlUpdateLageskontroll(Bygglovsbeslut lageskontroll)
         {
             string skilje = ", ";
+
+            string geometry = lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? skilje + "f.geom = " + createSdoGeometryFromRelationalData(lageskontroll) + " " : "";
+
 
             // Hanterar NULL för Oracle
             string beskrivning, notering, adressomr, adress, platsovrigt, diarie, fastighet, lageskontrollbestallning;
@@ -540,6 +549,7 @@ namespace kartforandring
                          "    f.bev_plats_fastighet = " + fastighet + skilje +
                          "    f.bev_plats_ovrigt = " + platsovrigt + skilje +
                          "    f.bev_bygglov_lag_best = " + lageskontrollbestallning + " " +
+                         geometry +
                          "WHERE f.fid = " + lageskontroll.Fid;
 
             return sql;
@@ -627,7 +637,133 @@ namespace kartforandring
             return dt;
         }
 
+        private static string createSdoGeometryFromRelationalData(Bygglovsbeslut bygglovsbeslut)
+        {
+            string geometry = "";
+            string sdoPrefix = "SDO_GEOMETRY(";
+            string sdoSuffix = ")";
+            string sdoGType = "";
+            string sdoSRID = "";
+            string sdoElemt = "";
+            string sdoOrdinates = "";
 
+            if (!string.IsNullOrWhiteSpace(bygglovsbeslut.Adress))
+            {
+                string sql = "SELECT geom FROM lkr_gis.gis_v_beladress WHERE adressplats_id = '" + bygglovsbeslut.Adress + "'";
+
+                DataTable dt = new DataTable();
+                OleDbConnection con = GetOleDbConncection();
+                OleDbCommand com = new OleDbCommand(sql, con);
+                OleDbDataReader dr;
+
+                com.Connection.Open();
+                dr = com.ExecuteReader();
+
+                dt.Load(dr);
+
+                dr.Close();
+                dr.Dispose();
+
+                if (dt.Rows.Count > 0)
+                {
+                    geometry = dt.Rows[0]["GEOM"].ToString();
+                }
+
+                dt.Dispose();
+            }
+            else if (!string.IsNullOrWhiteSpace(bygglovsbeslut.AdressOmr))
+            {
+                // Sorteringsordning viktig för uppbyggnad av linje troligt följande adressområdet
+                string sql = "SELECT b.geom.SDO_POINT.X AS X, b.geom.SDO_POINT.Y AS Y, b.adressplats_id AS adressplats_id, b.adressplats AS adressplats, b.littera AS littera " +
+                             "FROM   lkr_gis.gis_v_adressomrade a, " +
+                             "       lkr_gis.gis_v_beladress b " +
+                             "WHERE  UPPER(a.adressomrade) = UPPER(b.adressomr) " +
+                             "AND    a.adressomrades_id = '" + bygglovsbeslut.AdressOmr + "'" +
+                             "ORDER BY TO_NUMBER(b.adressplats) ASC, b.littera ASC";
+
+                DataTable dt = new DataTable();
+                OleDbConnection con = GetOleDbConncection();
+                OleDbCommand com = new OleDbCommand(sql, con);
+                OleDbDataReader dr;
+
+                com.Connection.Open();
+                dr = com.ExecuteReader();
+
+                dt.Load(dr);
+
+                dr.Close();
+                dr.Dispose();
+
+                if (dt.Rows.Count > 0)
+                {
+                    sdoGType = GeometrySdoGType.Line2D;
+                    sdoSRID = "NULL";
+                    if (dt.Rows.Count == 1)
+                    {
+                        // Punkt, vanlig enkel
+                        sdoElemt = "SDO_ELEM_INFO_ARRAY (1,1,1)";
+
+                        sdoOrdinates = "sdo_ordinate_array (" + dt.Rows[0]["X"].ToString().Replace(",", ".") + "," + dt.Rows[0]["Y"].ToString().Replace(",", ".") + ")";
+                    }
+                    else
+                    {
+                        // Linje, noder kopplade med raka segment
+                        sdoElemt = "SDO_ELEM_INFO_ARRAY(1,2,1)";
+
+                        string coordinates = "";
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            if (coordinates == "")
+                            {
+                                coordinates = row["X"].ToString() + "," + row["Y"].ToString();
+                            }
+                            else
+                            {
+                                coordinates += ", " + row["X"].ToString() + "," + row["Y"].ToString();
+                            }
+                        }
+                        sdoOrdinates = "sdo_ordinate_array (" + coordinates + ")";
+                    }
+
+
+                    geometry = sdoPrefix +
+                        sdoGType + "," +
+                        sdoSRID + "," +
+                        "NULL," +
+                        sdoElemt + "," +
+                        sdoOrdinates +
+                        sdoSuffix;
+                }
+
+                dt.Dispose();
+            }
+            else if (!string.IsNullOrWhiteSpace(bygglovsbeslut.Fastighet.ToString()))
+            {
+                string sql = "SELECT geom FROM lkr_gis.gis_v_fastighet WHERE fastighet_id = '" + bygglovsbeslut.Fastighet + "'";
+
+                DataTable dt = new DataTable();
+                OleDbConnection con = GetOleDbConncection();
+                OleDbCommand com = new OleDbCommand(sql, con);
+                OleDbDataReader dr;
+
+                com.Connection.Open();
+                dr = com.ExecuteReader();
+
+                dt.Load(dr);
+
+                dr.Close();
+                dr.Dispose();
+
+                if (dt.Rows.Count > 0)
+                {
+                    geometry = dt.Rows[0]["GEOM"].ToString();
+                }
+
+                dt.Dispose();
+            }
+
+            return geometry;
+        }
 
         internal static DataTable GetLageskontrollOrderingDomain()
         {
@@ -791,5 +927,15 @@ namespace kartforandring
 
             return new OleDbConnection(connectionStr);
         }
+    }
+
+    public static class GeometrySdoGType
+    {
+        public static string Point2D { get { return "2001"; } }
+        public static string Line2D { get { return "2002"; } }
+        public static string Polygon2D { get { return "2003"; } }
+        public static string Point3D { get { return "3001"; } }
+        public static string Line3D { get { return "3002"; } }
+        public static string Polygon3D { get { return "3003"; } }
     }
 }
