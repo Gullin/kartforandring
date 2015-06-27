@@ -191,7 +191,7 @@ namespace kartforandring
                     } 
 
 
-                    dt = createEmptyBygglovsbesllutsTable();
+                    dt = createEmptyBygglovsbeslutTable();
 
                     DataRow dr = dt.NewRow();
 
@@ -289,7 +289,7 @@ namespace kartforandring
                 int affectedRows = com.ExecuteNonQuery();
                 if (affectedRows > 0)
                 {
-                    dt = createEmptyBygglovsbesllutsTable();
+                    dt = createEmptyBygglovsbeslutTable();
 
                     DataRow dr = dt.NewRow();
 
@@ -555,7 +555,7 @@ namespace kartforandring
             return sql;
         }
 
-        private static DataTable createEmptyBygglovsbesllutsTable()
+        private static DataTable createEmptyBygglovsbeslutTable()
         {
             DataTable dt = new DataTable();
 
