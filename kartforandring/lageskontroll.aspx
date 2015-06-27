@@ -26,6 +26,8 @@
 <body>
     <form id="form1" runat="server">
         <div id="container">
+            <h1>För internbeställning av lägeskontroller</h1>
+            <h3>Tabellen listar registrerade bygglov hos MBK- och GIS-avdelningen. Beställningskolumnen indikerar om lägeskontroll är beställd av Stadsarkitektavdelningen (Intern) eller byggherre (Extern).</h3>
             <div id="LageskontrollTableContainer"></div>
         </div>
 
