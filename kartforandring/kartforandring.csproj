@@ -328,8 +328,10 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="class\DB.cs" />
+    <Compile Include="class\Kartforandring.DB.cs" />
+    <Compile Include="class\Kartforandring.sqlStrings.cs" />
     <Compile Include="class\Kartforandring.cs" />
+    <Compile Include="class\Kartforandring.Geometry.cs" />
     <Compile Include="class\UtilityApplicationAssembly.cs" />
     <Compile Include="class\UtilityDynamicLinqMultiSorting.cs" />
     <Compile Include="Controllers\KartforandringController.cs" />

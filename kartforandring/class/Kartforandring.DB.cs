@@ -46,14 +46,14 @@ namespace kartforandring
 
         public static DataTable GetBygglovsbeslut()
         {
-            return GetData(sqlSelectBygglovsbeslut(""));
+            return GetData(sqlStrings.sqlSelectBygglovsbeslut(""));
         }
 
 
         public static DataTable GetBygglovsbeslutMedLageskontroll()
         {
             //TODO: Inte NULL? Värde kan visa om lägeskontroll ska göras (beslut finns) eller om kontrollen redan är gjord
-            return GetData(sqlSelectBygglovsbeslut("AND f.bev_bygglov_lag IS NOT NULL "));
+            return GetData(sqlStrings.sqlSelectBygglovsbeslut("AND f.bev_bygglov_lag IS NOT NULL "));
         }
 
         public static DataTable AddLageskontroll(Bygglovsbeslut lageskontroll)
@@ -98,7 +98,7 @@ namespace kartforandring
         {
             try
             {
-                DeleteLogicalData(sqlDeleteLogicalKartforandring("f.bev_bygglov_lag IS NOT NULL AND f.fid = " + fid.ToString()));
+                DeleteLogicalData(sqlStrings.sqlDeleteLogicalKartforandring("f.bev_bygglov_lag IS NOT NULL AND f.fid = " + fid.ToString()));
             }
             catch
             {
@@ -106,7 +106,7 @@ namespace kartforandring
             }
         }
 
-        private static bool existBygglov(string diarienummer)
+        internal static bool existBygglov(string diarienummer)
         {
             string sql = "SELECT COUNT(*) antal FROM kar_samling WHERE TRIM(bev_bygglov_diarie) = '" + diarienummer.Trim() + "'";
 
@@ -127,7 +127,7 @@ namespace kartforandring
         }
 
 
-        private static DataTable GetData(string sql)
+        internal static DataTable GetData(string sql)
         {
             DataTable dt = new DataTable();
             OleDbConnection con = GetOleDbConncection();
@@ -145,7 +145,7 @@ namespace kartforandring
             return dt;
         }
 
-        private static DataTable AddData(Bygglovsbeslut lageskontroll)
+        internal static DataTable AddData(Bygglovsbeslut lageskontroll)
         {
             try
             {
@@ -169,7 +169,7 @@ namespace kartforandring
                 }
 
                 OleDbConnection con = GetOleDbConncection();
-                OleDbCommand com = new OleDbCommand(sqlInsertLageskontroll(lageskontroll), con);
+                OleDbCommand com = new OleDbCommand(sqlStrings.sqlInsertLageskontroll(lageskontroll), con);
 
                 // Inserts row
                 com.Connection.Open();
@@ -276,14 +276,14 @@ namespace kartforandring
             }
         }
 
-        private static DataTable UpdateData(Bygglovsbeslut lageskontroll)
+        internal static DataTable UpdateData(Bygglovsbeslut lageskontroll)
         {
             try
             {
                 DataTable dt = new DataTable();
 
                 OleDbConnection con = GetOleDbConncection();
-                OleDbCommand com = new OleDbCommand(sqlUpdateLageskontroll(lageskontroll), con);
+                OleDbCommand com = new OleDbCommand(sqlStrings.sqlUpdateLageskontroll(lageskontroll), con);
 
                 com.Connection.Open();
                 int affectedRows = com.ExecuteNonQuery();
@@ -368,7 +368,7 @@ namespace kartforandring
             }
         }
 
-        private static void DeleteLogicalData(string sql)
+        internal static void DeleteLogicalData(string sql)
         {
             try
             {
@@ -390,172 +390,172 @@ namespace kartforandring
             }
         }
 
-        private static string sqlDeleteLogicalKartforandring(string where)
-        {
-            if (!string.IsNullOrEmpty(where))
-            {
-                where = " WHERE " + where;
-            }
+        //private static string sqlDeleteLogicalKartforandring(string where)
+        //{
+        //    if (!string.IsNullOrEmpty(where))
+        //    {
+        //        where = " WHERE " + where;
+        //    }
 
-            string sql = "UPDATE topo_special.kar_samling f " +
-                         "SET    f.deleted = 1, " +
-                         "       f.user_modified = SYS_CONTEXT('USERENV','OS_USER'), " +
-                         "       f.date_modified = SYSDATE" +
-                         where;
+        //    string sql = "UPDATE topo_special.kar_samling f " +
+        //                 "SET    f.deleted = 1, " +
+        //                 "       f.user_modified = SYS_CONTEXT('USERENV','OS_USER'), " +
+        //                 "       f.date_modified = SYSDATE" +
+        //                 where;
 
-            return sql;
-        }
+        //    return sql;
+        //}
 
-        private static string sqlSelectBygglovsbeslut(string filter)
-        {
-            string sql = "SELECT f.fid AS fid, NVL2(f.geom, 1, 0) AS is_geom, " +
-                         "       NVL2(f.bev_plats_ovrigt, 1, 0) || NVL2(f.bev_plats_adressomr, 1, 0) || NVL2(f.bev_plats_fastighet, 1, 0) || NVL2(f.bev_plats_adress, 1, 0) || NVL2(f.geom, 1, 0) AS level_of_position, " +
-                         "       f.kar_obj AS kar_obj, obj.value AS kar_obj_text, " +
-                         "       f.kar_typ AS kar_typ, typ.value AS kar_typ_text, " +
-                         "       f.user_modified AS user_modified, f.date_modified AS date_modified, f.bev_notering AS bev_notering, " +
-                         "       f.bev_beskrivning AS bev_beskrivning, f.bev_inkommet AS bev_inkommet, f.bev_paborjat AS bev_paborjat, " +
-                         "       f.bev_utforare AS bev_utforare, f.bev_avslutat AS bev_avslutat, " +
-                         "       f.bev_plats_adress AS bev_plats_adress, adr.beladress AS bev_plats_adress_text, " +
-                         "       f.bev_plats_fastighet AS bev_plats_fastighet, NVL2(fr.trakt, fr.trakt || ' ' || fr.fbetnr, NULL) AS bev_plats_fastighet_text, " +
-                         "       NVL(f.bev_plats_adressomr, adromradr.adressomrades_id) AS bev_plats_adressomr, adromr.adressomrade AS bev_plats_adressomr_text, " +
-                         "       f.bev_plats_ovrigt AS bev_plats_ovrigt, " +
-                         "       f.bev_bygglov_diarie AS bev_bygglov_diarie, f.bev_bygglov_uts AS bev_bygglov_uts, bev_uts.value AS bev_bygglov_uts_text, " +
-                         "       f.bev_bygglov_lag AS bev_bygglov_lag, bev_lag.value AS bev_bygglov_lag_text, " +
-                         "       f.bev_bygglov_attefall AS bev_bygglov_attefall, bev_attefall.value AS bev_bygglov_attefall_text, " +
-                         "       f.bev_bygglov_riv AS bev_bygglov_riv, bev_riv.value AS bev_bygglov_riv_text, " +
-                         "       f.bev_bygglov_andamal AS bev_bygglov_andamal, bev_andamal.value AS bev_bygglov_andamal_text, " +
-                         "       f.bev_bygglov_uts_best AS bev_bygglov_uts_best, best_uts.value AS bev_bygglov_uts_best_text, " +
-                         "       f.bev_bygglov_lag_best AS bev_bygglov_lag_best, best_lag.value AS bev_bygglov_lag_best_text " +
-                         "FROM   kar_samling f, " +
-                         "       kar_obj_domain_tbd obj, " +
-                         "       kar_typ_domain_tbd typ, " +
-                         "       tefat.fir_fastigh fr, " +
-                         "       lkr_gis.gis_v_adressomrade adromr, " +
-                         "       lkr_gis.gis_v_beladress adr, " +
-                         "      (SELECT a.adressomrades_id AS adressomrades_id, b.adressplats_id AS adressplats_id " +
-                         "       FROM lkr_gis.gis_v_adressomrade a, lkr_gis.gis_v_beladress b " +
-                         "       WHERE UPPER(a.adressomrade) = UPPER(b.adressomr)) adromradr, " +
-                         "       kar_bygglov_bev_tbd bev_uts, " +
-                         "       kar_bygglov_bev_tbd bev_lag, " +
-                         "       kar_bygglov_bev_tbd bev_attefall, " +
-                         "       kar_bygglov_bev_tbd bev_riv, " +
-                         "       kar_bygglov_bev_tbd bev_andamal, " +
-                         "       kar_bestallning_init_tbd best_uts, " +
-                         "       kar_bestallning_init_tbd best_lag " +
-                         "WHERE  f.kar_obj = 100 " +
-                         "AND    f.kar_typ = 1020 " +
-                         "AND    f.kar_obj = obj.id(+) " +
-                         "AND    f.kar_typ = typ.id(+) " +
-                         "AND    f.bev_plats_fastighet = fr.fnr(+) " +
-                         "AND    f.bev_plats_adress = adr.adressplats_id(+) " +
-                         "AND    f.bev_plats_adressomr = adromr.adressomrades_id(+) " +
-                         "AND    f.bev_plats_adress = adromradr.adressplats_id(+) " +
-                         "AND    f.bev_bygglov_uts = bev_uts.id(+) " +
-                         "AND    f.bev_bygglov_lag = bev_lag.id(+) " +
-                         "AND    f.bev_bygglov_attefall = bev_attefall.id(+) " +
-                         "AND    f.bev_bygglov_riv = bev_riv.id(+) " +
-                         "AND    f.bev_bygglov_andamal = bev_andamal.id(+) " +
-                         "AND    f.bev_bygglov_uts_best = best_uts.id(+) " +
-                         filter +
-                         "AND    f.bev_bygglov_lag_best = best_lag.id(+) " +
-                         "AND    f.deleted = 0";
+        //private static string sqlSelectBygglovsbeslut(string filter)
+        //{
+        //    string sql = "SELECT f.fid AS fid, NVL2(f.geom, 1, 0) AS is_geom, " +
+        //                 "       NVL2(f.bev_plats_ovrigt, 1, 0) || NVL2(f.bev_plats_adressomr, 1, 0) || NVL2(f.bev_plats_fastighet, 1, 0) || NVL2(f.bev_plats_adress, 1, 0) || NVL2(f.geom, 1, 0) AS level_of_position, " +
+        //                 "       f.kar_obj AS kar_obj, obj.value AS kar_obj_text, " +
+        //                 "       f.kar_typ AS kar_typ, typ.value AS kar_typ_text, " +
+        //                 "       f.user_modified AS user_modified, f.date_modified AS date_modified, f.bev_notering AS bev_notering, " +
+        //                 "       f.bev_beskrivning AS bev_beskrivning, f.bev_inkommet AS bev_inkommet, f.bev_paborjat AS bev_paborjat, " +
+        //                 "       f.bev_utforare AS bev_utforare, f.bev_avslutat AS bev_avslutat, " +
+        //                 "       f.bev_plats_adress AS bev_plats_adress, adr.beladress AS bev_plats_adress_text, " +
+        //                 "       f.bev_plats_fastighet AS bev_plats_fastighet, NVL2(fr.trakt, fr.trakt || ' ' || fr.fbetnr, NULL) AS bev_plats_fastighet_text, " +
+        //                 "       NVL(f.bev_plats_adressomr, adromradr.adressomrades_id) AS bev_plats_adressomr, adromr.adressomrade AS bev_plats_adressomr_text, " +
+        //                 "       f.bev_plats_ovrigt AS bev_plats_ovrigt, " +
+        //                 "       f.bev_bygglov_diarie AS bev_bygglov_diarie, f.bev_bygglov_uts AS bev_bygglov_uts, bev_uts.value AS bev_bygglov_uts_text, " +
+        //                 "       f.bev_bygglov_lag AS bev_bygglov_lag, bev_lag.value AS bev_bygglov_lag_text, " +
+        //                 "       f.bev_bygglov_attefall AS bev_bygglov_attefall, bev_attefall.value AS bev_bygglov_attefall_text, " +
+        //                 "       f.bev_bygglov_riv AS bev_bygglov_riv, bev_riv.value AS bev_bygglov_riv_text, " +
+        //                 "       f.bev_bygglov_andamal AS bev_bygglov_andamal, bev_andamal.value AS bev_bygglov_andamal_text, " +
+        //                 "       f.bev_bygglov_uts_best AS bev_bygglov_uts_best, best_uts.value AS bev_bygglov_uts_best_text, " +
+        //                 "       f.bev_bygglov_lag_best AS bev_bygglov_lag_best, best_lag.value AS bev_bygglov_lag_best_text " +
+        //                 "FROM   kar_samling f, " +
+        //                 "       kar_obj_domain_tbd obj, " +
+        //                 "       kar_typ_domain_tbd typ, " +
+        //                 "       tefat.fir_fastigh fr, " +
+        //                 "       lkr_gis.gis_v_adressomrade adromr, " +
+        //                 "       lkr_gis.gis_v_beladress adr, " +
+        //                 "      (SELECT a.adressomrades_id AS adressomrades_id, b.adressplats_id AS adressplats_id " +
+        //                 "       FROM lkr_gis.gis_v_adressomrade a, lkr_gis.gis_v_beladress b " +
+        //                 "       WHERE UPPER(a.adressomrade) = UPPER(b.adressomr)) adromradr, " +
+        //                 "       kar_bygglov_bev_tbd bev_uts, " +
+        //                 "       kar_bygglov_bev_tbd bev_lag, " +
+        //                 "       kar_bygglov_bev_tbd bev_attefall, " +
+        //                 "       kar_bygglov_bev_tbd bev_riv, " +
+        //                 "       kar_bygglov_bev_tbd bev_andamal, " +
+        //                 "       kar_bestallning_init_tbd best_uts, " +
+        //                 "       kar_bestallning_init_tbd best_lag " +
+        //                 "WHERE  f.kar_obj = 100 " +
+        //                 "AND    f.kar_typ = 1020 " +
+        //                 "AND    f.kar_obj = obj.id(+) " +
+        //                 "AND    f.kar_typ = typ.id(+) " +
+        //                 "AND    f.bev_plats_fastighet = fr.fnr(+) " +
+        //                 "AND    f.bev_plats_adress = adr.adressplats_id(+) " +
+        //                 "AND    f.bev_plats_adressomr = adromr.adressomrades_id(+) " +
+        //                 "AND    f.bev_plats_adress = adromradr.adressplats_id(+) " +
+        //                 "AND    f.bev_bygglov_uts = bev_uts.id(+) " +
+        //                 "AND    f.bev_bygglov_lag = bev_lag.id(+) " +
+        //                 "AND    f.bev_bygglov_attefall = bev_attefall.id(+) " +
+        //                 "AND    f.bev_bygglov_riv = bev_riv.id(+) " +
+        //                 "AND    f.bev_bygglov_andamal = bev_andamal.id(+) " +
+        //                 "AND    f.bev_bygglov_uts_best = best_uts.id(+) " +
+        //                 filter +
+        //                 "AND    f.bev_bygglov_lag_best = best_lag.id(+) " +
+        //                 "AND    f.deleted = 0";
 
-            return sql;
-        }
+        //    return sql;
+        //}
 
-        private static string sqlInsertLageskontroll(Bygglovsbeslut lageskontroll)
-        {
-            string skilje = ", ";
+        //private static string sqlInsertLageskontroll(Bygglovsbeslut lageskontroll)
+        //{
+        //    string skilje = ", ";
 
-            string geometryColumn = lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? "geom" + skilje : "";
-            string geometry = lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? createSdoGeometryFromRelationalData(lageskontroll) + skilje : "";
-
-
-            // Hanterar NULL för Oracle
-            string beskrivning, notering, adressomr, adress, platsovrigt, diarie, fastighet, lageskontrollbestallning;
-
-            beskrivning = string.IsNullOrEmpty(lageskontroll.Beskrivning) ? "NULL" : "'" + lageskontroll.Beskrivning + "'";
-            notering = string.IsNullOrEmpty(lageskontroll.Notering) ? "NULL" : "'" + lageskontroll.Notering + "'";
-            adressomr = string.IsNullOrEmpty(lageskontroll.AdressOmr) ? "NULL" : "'" + lageskontroll.AdressOmr + "'";
-            adress = string.IsNullOrEmpty(lageskontroll.Adress) ? "NULL" : "'" + lageskontroll.Adress + "'";
-            platsovrigt = string.IsNullOrEmpty(lageskontroll.PlatsOvrigt) ? "NULL" : "'" + lageskontroll.PlatsOvrigt + "'";
-            diarie = string.IsNullOrEmpty(lageskontroll.Diarie) ? "NULL" : "'" + lageskontroll.Diarie + "'";
-
-            fastighet = string.IsNullOrEmpty(lageskontroll.Fastighet.ToString()) ? "NULL" : lageskontroll.Fastighet.ToString();
-            lageskontrollbestallning = string.IsNullOrEmpty(lageskontroll.LageskontrollBestallning.ToString()) ? "NULL" : lageskontroll.LageskontrollBestallning.ToString();
-
-            string sql = "INSERT INTO topo_special.kar_samling (" +
-                                                  "kar_obj" + skilje +
-                                                  "kar_typ" + skilje +
-                                                  "bev_beskrivning" + skilje +
-                                                  "bev_notering" + skilje +
-                                                  "bev_inkommet" + skilje +
-                                                  "bev_plats_adressomr" + skilje +
-                                                  "bev_plats_adress" + skilje +
-                                                  "bev_plats_fastighet" + skilje +
-                                                  "bev_plats_ovrigt" + skilje +
-                                                  "bev_bygglov_diarie" + skilje +
-                                                  "bev_bygglov_lag" + skilje +
-                                                  "bev_bygglov_lag_best" + skilje +
-                                                  geometryColumn +
-                                                  "guid_tmp" +
-                                                  ") VALUES (" +
-                                                             "100" + skilje +
-                                                             "1020" + skilje +
-                                                             beskrivning + skilje +
-                                                             notering + skilje +
-                                                             "SYSDATE" + skilje +
-                                                             adressomr + skilje +
-                                                             adress + skilje +
-                                                             fastighet + skilje +
-                                                             platsovrigt + skilje +
-                                                             diarie + skilje +
-                                                             "10" + skilje +
-                                                             lageskontrollbestallning + skilje +
-                                                             geometry +
-                                                             "'" + lageskontroll.tmpGuidKey.ToString().Replace("-","") + "'" +
-                                                             ")";
-
-            return sql;
-        }
-
-        private static string sqlUpdateLageskontroll(Bygglovsbeslut lageskontroll)
-        {
-            string skilje = ", ";
-
-            string geometry = lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? skilje + "f.geom = " + createSdoGeometryFromRelationalData(lageskontroll) + " " : "";
+        //    string geometryColumn = lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? "geom" + skilje : "";
+        //    string geometry = lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? createSdoGeometryFromRelationalData(lageskontroll) + skilje : "";
 
 
-            // Hanterar NULL för Oracle
-            string beskrivning, notering, adressomr, adress, platsovrigt, diarie, fastighet, lageskontrollbestallning;
+        //    // Hanterar NULL för Oracle
+        //    string beskrivning, notering, adressomr, adress, platsovrigt, diarie, fastighet, lageskontrollbestallning;
 
-            beskrivning = string.IsNullOrEmpty(lageskontroll.Beskrivning) ? "NULL" : "'" + lageskontroll.Beskrivning + "'";
-            notering = string.IsNullOrEmpty(lageskontroll.Notering) ? "NULL" : "'" + lageskontroll.Notering + "'";
-            adressomr = string.IsNullOrEmpty(lageskontroll.AdressOmr) ? "NULL" : "'" + lageskontroll.AdressOmr + "'";
-            adress = string.IsNullOrEmpty(lageskontroll.Adress) ? "NULL" : "'" + lageskontroll.Adress + "'";
-            platsovrigt = string.IsNullOrEmpty(lageskontroll.PlatsOvrigt) ? "NULL" : "'" + lageskontroll.PlatsOvrigt + "'";
-            diarie = string.IsNullOrEmpty(lageskontroll.Diarie) ? "NULL" : "'" + lageskontroll.Diarie + "'";
+        //    beskrivning = string.IsNullOrEmpty(lageskontroll.Beskrivning) ? "NULL" : "'" + lageskontroll.Beskrivning + "'";
+        //    notering = string.IsNullOrEmpty(lageskontroll.Notering) ? "NULL" : "'" + lageskontroll.Notering + "'";
+        //    adressomr = string.IsNullOrEmpty(lageskontroll.AdressOmr) ? "NULL" : "'" + lageskontroll.AdressOmr + "'";
+        //    adress = string.IsNullOrEmpty(lageskontroll.Adress) ? "NULL" : "'" + lageskontroll.Adress + "'";
+        //    platsovrigt = string.IsNullOrEmpty(lageskontroll.PlatsOvrigt) ? "NULL" : "'" + lageskontroll.PlatsOvrigt + "'";
+        //    diarie = string.IsNullOrEmpty(lageskontroll.Diarie) ? "NULL" : "'" + lageskontroll.Diarie + "'";
 
-            fastighet = string.IsNullOrEmpty(lageskontroll.Fastighet.ToString()) ? "NULL" : lageskontroll.Fastighet.ToString();
-            lageskontrollbestallning = string.IsNullOrEmpty(lageskontroll.LageskontrollBestallning.ToString()) ? "NULL" : lageskontroll.LageskontrollBestallning.ToString();
+        //    fastighet = string.IsNullOrEmpty(lageskontroll.Fastighet.ToString()) ? "NULL" : lageskontroll.Fastighet.ToString();
+        //    lageskontrollbestallning = string.IsNullOrEmpty(lageskontroll.LageskontrollBestallning.ToString()) ? "NULL" : lageskontroll.LageskontrollBestallning.ToString();
 
-            string sql = "UPDATE topo_special.kar_samling f " +
-                         "SET f.bev_beskrivning = " + beskrivning + skilje +
-                         "    f.bev_notering = " + notering + skilje +
-                         "    f.user_modified = SYS_CONTEXT('USERENV','OS_USER')" + skilje +
-                         "    f.date_modified = SYSDATE" + skilje +
-                         "    f.bev_plats_adressomr = " + adressomr + skilje +
-                         "    f.bev_plats_adress = " + adress + skilje +
-                         "    f.bev_plats_fastighet = " + fastighet + skilje +
-                         "    f.bev_plats_ovrigt = " + platsovrigt + skilje +
-                         "    f.bev_bygglov_lag_best = " + lageskontrollbestallning + " " +
-                         geometry +
-                         "WHERE f.fid = " + lageskontroll.Fid;
+        //    string sql = "INSERT INTO topo_special.kar_samling (" +
+        //                                          "kar_obj" + skilje +
+        //                                          "kar_typ" + skilje +
+        //                                          "bev_beskrivning" + skilje +
+        //                                          "bev_notering" + skilje +
+        //                                          "bev_inkommet" + skilje +
+        //                                          "bev_plats_adressomr" + skilje +
+        //                                          "bev_plats_adress" + skilje +
+        //                                          "bev_plats_fastighet" + skilje +
+        //                                          "bev_plats_ovrigt" + skilje +
+        //                                          "bev_bygglov_diarie" + skilje +
+        //                                          "bev_bygglov_lag" + skilje +
+        //                                          "bev_bygglov_lag_best" + skilje +
+        //                                          geometryColumn +
+        //                                          "guid_tmp" +
+        //                                          ") VALUES (" +
+        //                                                     "100" + skilje +
+        //                                                     "1020" + skilje +
+        //                                                     beskrivning + skilje +
+        //                                                     notering + skilje +
+        //                                                     "SYSDATE" + skilje +
+        //                                                     adressomr + skilje +
+        //                                                     adress + skilje +
+        //                                                     fastighet + skilje +
+        //                                                     platsovrigt + skilje +
+        //                                                     diarie + skilje +
+        //                                                     "10" + skilje +
+        //                                                     lageskontrollbestallning + skilje +
+        //                                                     geometry +
+        //                                                     "'" + lageskontroll.tmpGuidKey.ToString().Replace("-","") + "'" +
+        //                                                     ")";
 
-            return sql;
-        }
+        //    return sql;
+        //}
 
-        private static DataTable createEmptyBygglovsbeslutTable()
+        //private static string sqlUpdateLageskontroll(Bygglovsbeslut lageskontroll)
+        //{
+        //    string skilje = ", ";
+
+        //    string geometry = lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? skilje + "f.geom = " + createSdoGeometryFromRelationalData(lageskontroll) + " " : "";
+
+
+        //    // Hanterar NULL för Oracle
+        //    string beskrivning, notering, adressomr, adress, platsovrigt, diarie, fastighet, lageskontrollbestallning;
+
+        //    beskrivning = string.IsNullOrEmpty(lageskontroll.Beskrivning) ? "NULL" : "'" + lageskontroll.Beskrivning + "'";
+        //    notering = string.IsNullOrEmpty(lageskontroll.Notering) ? "NULL" : "'" + lageskontroll.Notering + "'";
+        //    adressomr = string.IsNullOrEmpty(lageskontroll.AdressOmr) ? "NULL" : "'" + lageskontroll.AdressOmr + "'";
+        //    adress = string.IsNullOrEmpty(lageskontroll.Adress) ? "NULL" : "'" + lageskontroll.Adress + "'";
+        //    platsovrigt = string.IsNullOrEmpty(lageskontroll.PlatsOvrigt) ? "NULL" : "'" + lageskontroll.PlatsOvrigt + "'";
+        //    diarie = string.IsNullOrEmpty(lageskontroll.Diarie) ? "NULL" : "'" + lageskontroll.Diarie + "'";
+
+        //    fastighet = string.IsNullOrEmpty(lageskontroll.Fastighet.ToString()) ? "NULL" : lageskontroll.Fastighet.ToString();
+        //    lageskontrollbestallning = string.IsNullOrEmpty(lageskontroll.LageskontrollBestallning.ToString()) ? "NULL" : lageskontroll.LageskontrollBestallning.ToString();
+
+        //    string sql = "UPDATE topo_special.kar_samling f " +
+        //                 "SET f.bev_beskrivning = " + beskrivning + skilje +
+        //                 "    f.bev_notering = " + notering + skilje +
+        //                 "    f.user_modified = SYS_CONTEXT('USERENV','OS_USER')" + skilje +
+        //                 "    f.date_modified = SYSDATE" + skilje +
+        //                 "    f.bev_plats_adressomr = " + adressomr + skilje +
+        //                 "    f.bev_plats_adress = " + adress + skilje +
+        //                 "    f.bev_plats_fastighet = " + fastighet + skilje +
+        //                 "    f.bev_plats_ovrigt = " + platsovrigt + skilje +
+        //                 "    f.bev_bygglov_lag_best = " + lageskontrollbestallning + " " +
+        //                 geometry +
+        //                 "WHERE f.fid = " + lageskontroll.Fid;
+
+        //    return sql;
+        //}
+
+        internal static DataTable createEmptyBygglovsbeslutTable()
         {
             DataTable dt = new DataTable();
 
@@ -637,166 +637,166 @@ namespace kartforandring
             return dt;
         }
 
-        private static string createSdoGeometryFromRelationalData(Bygglovsbeslut bygglovsbeslut)
-        {
-            string geometry = "";
-            string sdoPrefix = "SDO_GEOMETRY(";
-            string sdoSuffix = ")";
-            string sdoGType = "";
-            string sdoSRID = "";
-            string sdoPoint = "";
-            string sdoElemt = "";
-            string sdoOrdinates = "";
+        //private static string createSdoGeometryFromRelationalData(Bygglovsbeslut bygglovsbeslut)
+        //{
+        //    string geometry = "";
+        //    string sdoPrefix = "SDO_GEOMETRY(";
+        //    string sdoSuffix = ")";
+        //    string sdoGType = "";
+        //    string sdoSRID = "";
+        //    string sdoPoint = "";
+        //    string sdoElemt = "";
+        //    string sdoOrdinates = "";
 
-            if (!string.IsNullOrWhiteSpace(bygglovsbeslut.Adress))
-            {
-                string sql = "SELECT a.geom.SDO_POINT.X AS X, a.geom.SDO_POINT.Y AS Y FROM lkr_gis.gis_v_beladress a WHERE a.adressplats_id = '" + bygglovsbeslut.Adress + "'";
+        //    if (!string.IsNullOrWhiteSpace(bygglovsbeslut.Adress))
+        //    {
+        //        string sql = "SELECT a.geom.SDO_POINT.X AS X, a.geom.SDO_POINT.Y AS Y FROM lkr_gis.gis_v_beladress a WHERE a.adressplats_id = '" + bygglovsbeslut.Adress + "'";
 
-                DataTable dt = new DataTable();
-                OleDbConnection con = GetOleDbConncection();
-                OleDbCommand com = new OleDbCommand(sql, con);
-                OleDbDataReader dr;
+        //        DataTable dt = new DataTable();
+        //        OleDbConnection con = GetOleDbConncection();
+        //        OleDbCommand com = new OleDbCommand(sql, con);
+        //        OleDbDataReader dr;
 
-                com.Connection.Open();
-                dr = com.ExecuteReader();
+        //        com.Connection.Open();
+        //        dr = com.ExecuteReader();
 
-                dt.Load(dr);
+        //        dt.Load(dr);
 
-                dr.Close();
-                dr.Dispose();
+        //        dr.Close();
+        //        dr.Dispose();
 
-                if (dt.Rows.Count > 0)
-                {
-                    coord2SdoGeometryAsString(ref geometry, sdoPrefix, sdoSuffix, ref sdoGType, ref sdoSRID, ref sdoPoint, ref sdoElemt, ref sdoOrdinates, dt, false);
-                }
+        //        if (dt.Rows.Count > 0)
+        //        {
+        //            coord2SdoGeometryAsString(ref geometry, sdoPrefix, sdoSuffix, ref sdoGType, ref sdoSRID, ref sdoPoint, ref sdoElemt, ref sdoOrdinates, dt, false);
+        //        }
 
-                dt.Dispose();
-            }
-            else if (!string.IsNullOrWhiteSpace(bygglovsbeslut.AdressOmr))
-            {
-                // Sorteringsordning viktig för uppbyggnad av linje troligt följande adressområdet
-                string sql = "SELECT b.geom.SDO_POINT.X AS X, b.geom.SDO_POINT.Y AS Y, b.adressplats_id AS adressplats_id, b.adressplats AS adressplats, b.littera AS littera " +
-                             "FROM   lkr_gis.gis_v_adressomrade a, " +
-                             "       lkr_gis.gis_v_beladress b " +
-                             "WHERE  UPPER(a.adressomrade) = UPPER(b.adressomr) " +
-                             "AND    a.adressomrades_id = '" + bygglovsbeslut.AdressOmr + "'" +
-                             "ORDER BY TO_NUMBER(b.adressplats) ASC, b.littera ASC";
+        //        dt.Dispose();
+        //    }
+        //    else if (!string.IsNullOrWhiteSpace(bygglovsbeslut.AdressOmr))
+        //    {
+        //        // Sorteringsordning viktig för uppbyggnad av linje troligt följande adressområdet
+        //        string sql = "SELECT b.geom.SDO_POINT.X AS X, b.geom.SDO_POINT.Y AS Y, b.adressplats_id AS adressplats_id, b.adressplats AS adressplats, b.littera AS littera " +
+        //                     "FROM   lkr_gis.gis_v_adressomrade a, " +
+        //                     "       lkr_gis.gis_v_beladress b " +
+        //                     "WHERE  UPPER(a.adressomrade) = UPPER(b.adressomr) " +
+        //                     "AND    a.adressomrades_id = '" + bygglovsbeslut.AdressOmr + "'" +
+        //                     "ORDER BY TO_NUMBER(b.adressplats) ASC, b.littera ASC";
 
-                DataTable dt = new DataTable();
-                OleDbConnection con = GetOleDbConncection();
-                OleDbCommand com = new OleDbCommand(sql, con);
-                OleDbDataReader dr;
+        //        DataTable dt = new DataTable();
+        //        OleDbConnection con = GetOleDbConncection();
+        //        OleDbCommand com = new OleDbCommand(sql, con);
+        //        OleDbDataReader dr;
 
-                com.Connection.Open();
-                dr = com.ExecuteReader();
+        //        com.Connection.Open();
+        //        dr = com.ExecuteReader();
 
-                dt.Load(dr);
+        //        dt.Load(dr);
 
-                dr.Close();
-                dr.Dispose();
+        //        dr.Close();
+        //        dr.Dispose();
 
-                if (dt.Rows.Count > 0)
-                {
-                    coord2SdoGeometryAsString(ref geometry, sdoPrefix, sdoSuffix, ref sdoGType, ref sdoSRID, ref sdoPoint, ref sdoElemt, ref sdoOrdinates, dt, false);
-                }
+        //        if (dt.Rows.Count > 0)
+        //        {
+        //            coord2SdoGeometryAsString(ref geometry, sdoPrefix, sdoSuffix, ref sdoGType, ref sdoSRID, ref sdoPoint, ref sdoElemt, ref sdoOrdinates, dt, false);
+        //        }
 
-                dt.Dispose();
-            }
-            else if (!string.IsNullOrWhiteSpace(bygglovsbeslut.Fastighet.ToString()))
-            {
-                // Extraherar yttre elementet i polygonen (SDO_UTIL.EXTRACT(f.geom, 1, 1)) för att hanterar polygoner med hål (hål plockas bort)
-                // Extraherar koordinaterna från MDSYS.SDO_GEOMETRY (SDO_UTIL.GETVERTICES())
-                string sql = "SELECT t.X X, t.Y Y " +
-                             "FROM lkr_gis.gis_v_fastytor f, " +
-                             "     TABLE(SDO_UTIL.GETVERTICES(SDO_UTIL.EXTRACT(f.geom, 1, 1))) t " +
-                             "WHERE fastighet_id = '" + bygglovsbeslut.Fastighet + "'";
+        //        dt.Dispose();
+        //    }
+        //    else if (!string.IsNullOrWhiteSpace(bygglovsbeslut.Fastighet.ToString()))
+        //    {
+        //        // Extraherar yttre elementet i polygonen (SDO_UTIL.EXTRACT(f.geom, 1, 1)) för att hanterar polygoner med hål (hål plockas bort)
+        //        // Extraherar koordinaterna från MDSYS.SDO_GEOMETRY (SDO_UTIL.GETVERTICES())
+        //        string sql = "SELECT t.X X, t.Y Y " +
+        //                     "FROM lkr_gis.gis_v_fastytor f, " +
+        //                     "     TABLE(SDO_UTIL.GETVERTICES(SDO_UTIL.EXTRACT(f.geom, 1, 1))) t " +
+        //                     "WHERE fastighet_id = '" + bygglovsbeslut.Fastighet + "'";
 
-                DataTable dt = new DataTable();
-                OleDbConnection con = GetOleDbConncection();
-                OleDbCommand com = new OleDbCommand(sql, con);
-                OleDbDataReader dr;
+        //        DataTable dt = new DataTable();
+        //        OleDbConnection con = GetOleDbConncection();
+        //        OleDbCommand com = new OleDbCommand(sql, con);
+        //        OleDbDataReader dr;
 
-                com.Connection.Open();
-                dr = com.ExecuteReader();
+        //        com.Connection.Open();
+        //        dr = com.ExecuteReader();
 
-                dt.Load(dr);
+        //        dt.Load(dr);
 
-                dr.Close();
-                dr.Dispose();
+        //        dr.Close();
+        //        dr.Dispose();
 
-                if (dt.Rows.Count > 0)
-                {
-                    // Kontroll om att minst tre koordinater existerar (minst 4 då första och sista är samma). Annars går polygon ej att konstrueras.
-                    bool isPolygon = false;
-                    if (dt.Rows.Count > 3)
-                    {
-                        isPolygon = true;
-                    }
+        //        if (dt.Rows.Count > 0)
+        //        {
+        //            // Kontroll om att minst tre koordinater existerar (minst 4 då första och sista är samma). Annars går polygon ej att konstrueras.
+        //            bool isPolygon = false;
+        //            if (dt.Rows.Count > 3)
+        //            {
+        //                isPolygon = true;
+        //            }
 
-                    coord2SdoGeometryAsString(ref geometry, sdoPrefix, sdoSuffix, ref sdoGType, ref sdoSRID, ref sdoPoint, ref sdoElemt, ref sdoOrdinates, dt, isPolygon);
-                }
+        //            coord2SdoGeometryAsString(ref geometry, sdoPrefix, sdoSuffix, ref sdoGType, ref sdoSRID, ref sdoPoint, ref sdoElemt, ref sdoOrdinates, dt, isPolygon);
+        //        }
 
-                dt.Dispose();
-            }
+        //        dt.Dispose();
+        //    }
 
-            return geometry;
-        }
+        //    return geometry;
+        //}
 
-        private static void coord2SdoGeometryAsString(ref string geometry, string sdoPrefix, string sdoSuffix, ref string sdoGType, ref string sdoSRID, ref string sdoPoint, ref string sdoElemt, ref string sdoOrdinates, DataTable dt, bool isPolygon)
-        {
-            sdoSRID = "NULL";
+        //private static void coord2SdoGeometryAsString(ref string geometry, string sdoPrefix, string sdoSuffix, ref string sdoGType, ref string sdoSRID, ref string sdoPoint, ref string sdoElemt, ref string sdoOrdinates, DataTable dt, bool isPolygon)
+        //{
+        //    sdoSRID = "NULL";
 
-            if (dt.Rows.Count == 1)
-            {
-                // Punkt, vanlig enkel
-                sdoGType = GeometrySdoGType.Point2D;
-                sdoPoint = "SDO_POINT_TYPE(" + dt.Rows[0]["X"].ToString().Replace(",", ".") + "," + dt.Rows[0]["Y"].ToString().Replace(",", ".") + ",NULL)";
-                sdoElemt = "NULL";
+        //    if (dt.Rows.Count == 1)
+        //    {
+        //        // Punkt, vanlig enkel
+        //        sdoGType = SdoGType.Point2D;
+        //        sdoPoint = "SDO_POINT_TYPE(" + dt.Rows[0]["X"].ToString().Replace(",", ".") + "," + dt.Rows[0]["Y"].ToString().Replace(",", ".") + ",NULL)";
+        //        sdoElemt = "NULL";
 
-                sdoOrdinates = "NULL";
-            }
-            else
-            {
-                sdoPoint = "NULL";
+        //        sdoOrdinates = "NULL";
+        //    }
+        //    else
+        //    {
+        //        sdoPoint = "NULL";
 
-                // Linje, noder kopplade med raka segment
-                if (isPolygon)
-                {
-                    sdoGType = GeometrySdoGType.Polygon2D;
-                    sdoElemt = "SDO_ELEM_INFO_ARRAY(1,1003,1)";
-                }
-                else
-                {
-                    sdoGType = GeometrySdoGType.Line2D;
-                    sdoElemt = "SDO_ELEM_INFO_ARRAY(1,2,1)";
-                }
+        //        // Linje, noder kopplade med raka segment
+        //        if (isPolygon)
+        //        {
+        //            sdoGType = SdoGType.Polygon2D;
+        //            sdoElemt = "SDO_ELEM_INFO_ARRAY(1,1003,1)";
+        //        }
+        //        else
+        //        {
+        //            sdoGType = SdoGType.Line2D;
+        //            sdoElemt = "SDO_ELEM_INFO_ARRAY(1,2,1)";
+        //        }
 
-                string coordinates = "";
-                string tmpX, tmpY;
-                foreach (DataRow row in dt.Rows)
-                {
-                    tmpX = row["X"].ToString().Replace(",", ".");
-                    tmpY = row["Y"].ToString().Replace(",", ".");
-                    if (coordinates == "")
-                    {
-                        coordinates = tmpX + "," + tmpY;
-                    }
-                    else
-                    {
-                        coordinates += ", " + tmpX + "," + tmpY;
-                    }
-                }
-                sdoOrdinates = "sdo_ordinate_array (" + coordinates + ")";
-            }
+        //        string coordinates = "";
+        //        string tmpX, tmpY;
+        //        foreach (DataRow row in dt.Rows)
+        //        {
+        //            tmpX = row["X"].ToString().Replace(",", ".");
+        //            tmpY = row["Y"].ToString().Replace(",", ".");
+        //            if (coordinates == "")
+        //            {
+        //                coordinates = tmpX + "," + tmpY;
+        //            }
+        //            else
+        //            {
+        //                coordinates += ", " + tmpX + "," + tmpY;
+        //            }
+        //        }
+        //        sdoOrdinates = "sdo_ordinate_array (" + coordinates + ")";
+        //    }
 
-            geometry = sdoPrefix +
-                sdoGType + "," +
-                sdoSRID + "," +
-                sdoPoint + "," +
-                sdoElemt + "," +
-                sdoOrdinates +
-                sdoSuffix;
-        }
+        //    geometry = sdoPrefix +
+        //        sdoGType + "," +
+        //        sdoSRID + "," +
+        //        sdoPoint + "," +
+        //        sdoElemt + "," +
+        //        sdoOrdinates +
+        //        sdoSuffix;
+        //}
 
         internal static DataTable GetLageskontrollOrderingDomain()
         {
@@ -962,13 +962,13 @@ namespace kartforandring
         }
     }
 
-    public static class GeometrySdoGType
-    {
-        public static string Point2D { get { return "2001"; } }
-        public static string Line2D { get { return "2002"; } }
-        public static string Polygon2D { get { return "2003"; } }
-        public static string Point3D { get { return "3001"; } }
-        public static string Line3D { get { return "3002"; } }
-        public static string Polygon3D { get { return "3003"; } }
-    }
+    //public static class SdoGType
+    //{
+    //    public static string Point2D { get { return "2001"; } }
+    //    public static string Line2D { get { return "2002"; } }
+    //    public static string Polygon2D { get { return "2003"; } }
+    //    public static string Point3D { get { return "3001"; } }
+    //    public static string Line3D { get { return "3002"; } }
+    //    public static string Polygon3D { get { return "3003"; } }
+    //}
 }
