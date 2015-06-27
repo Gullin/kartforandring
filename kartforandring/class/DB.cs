@@ -644,12 +644,13 @@ namespace kartforandring
             string sdoSuffix = ")";
             string sdoGType = "";
             string sdoSRID = "";
+            string sdoPoint = "";
             string sdoElemt = "";
             string sdoOrdinates = "";
 
             if (!string.IsNullOrWhiteSpace(bygglovsbeslut.Adress))
             {
-                string sql = "SELECT geom FROM lkr_gis.gis_v_beladress WHERE adressplats_id = '" + bygglovsbeslut.Adress + "'";
+                string sql = "SELECT a.geom.SDO_POINT.X AS X, a.geom.SDO_POINT.Y AS Y FROM lkr_gis.gis_v_beladress a WHERE a.adressplats_id = '" + bygglovsbeslut.Adress + "'";
 
                 DataTable dt = new DataTable();
                 OleDbConnection con = GetOleDbConncection();
@@ -666,7 +667,7 @@ namespace kartforandring
 
                 if (dt.Rows.Count > 0)
                 {
-                    geometry = dt.Rows[0]["GEOM"].ToString();
+                    coord2SdoGeometryAsString(ref geometry, sdoPrefix, sdoSuffix, ref sdoGType, ref sdoSRID, ref sdoPoint, ref sdoElemt, ref sdoOrdinates, dt, false);
                 }
 
                 dt.Dispose();
@@ -696,50 +697,19 @@ namespace kartforandring
 
                 if (dt.Rows.Count > 0)
                 {
-                    sdoGType = GeometrySdoGType.Line2D;
-                    sdoSRID = "NULL";
-                    if (dt.Rows.Count == 1)
-                    {
-                        // Punkt, vanlig enkel
-                        sdoElemt = "SDO_ELEM_INFO_ARRAY (1,1,1)";
-
-                        sdoOrdinates = "sdo_ordinate_array (" + dt.Rows[0]["X"].ToString().Replace(",", ".") + "," + dt.Rows[0]["Y"].ToString().Replace(",", ".") + ")";
-                    }
-                    else
-                    {
-                        // Linje, noder kopplade med raka segment
-                        sdoElemt = "SDO_ELEM_INFO_ARRAY(1,2,1)";
-
-                        string coordinates = "";
-                        foreach (DataRow row in dt.Rows)
-                        {
-                            if (coordinates == "")
-                            {
-                                coordinates = row["X"].ToString() + "," + row["Y"].ToString();
-                            }
-                            else
-                            {
-                                coordinates += ", " + row["X"].ToString() + "," + row["Y"].ToString();
-                            }
-                        }
-                        sdoOrdinates = "sdo_ordinate_array (" + coordinates + ")";
-                    }
-
-
-                    geometry = sdoPrefix +
-                        sdoGType + "," +
-                        sdoSRID + "," +
-                        "NULL," +
-                        sdoElemt + "," +
-                        sdoOrdinates +
-                        sdoSuffix;
+                    coord2SdoGeometryAsString(ref geometry, sdoPrefix, sdoSuffix, ref sdoGType, ref sdoSRID, ref sdoPoint, ref sdoElemt, ref sdoOrdinates, dt, false);
                 }
 
                 dt.Dispose();
             }
             else if (!string.IsNullOrWhiteSpace(bygglovsbeslut.Fastighet.ToString()))
             {
-                string sql = "SELECT geom FROM lkr_gis.gis_v_fastighet WHERE fastighet_id = '" + bygglovsbeslut.Fastighet + "'";
+                // Extraherar yttre elementet i polygonen (SDO_UTIL.EXTRACT(f.geom, 1, 1)) för att hanterar polygoner med hål (hål plockas bort)
+                // Extraherar koordinaterna från MDSYS.SDO_GEOMETRY (SDO_UTIL.GETVERTICES())
+                string sql = "SELECT t.X X, t.Y Y " +
+                             "FROM lkr_gis.gis_v_fastytor f, " +
+                             "     TABLE(SDO_UTIL.GETVERTICES(SDO_UTIL.EXTRACT(f.geom, 1, 1))) t " +
+                             "WHERE fastighet_id = '" + bygglovsbeslut.Fastighet + "'";
 
                 DataTable dt = new DataTable();
                 OleDbConnection con = GetOleDbConncection();
@@ -756,13 +726,76 @@ namespace kartforandring
 
                 if (dt.Rows.Count > 0)
                 {
-                    geometry = dt.Rows[0]["GEOM"].ToString();
+                    // Kontroll om att minst tre koordinater existerar (minst 4 då första och sista är samma). Annars går polygon ej att konstrueras.
+                    bool isPolygon = false;
+                    if (dt.Rows.Count > 3)
+                    {
+                        isPolygon = true;
+                    }
+
+                    coord2SdoGeometryAsString(ref geometry, sdoPrefix, sdoSuffix, ref sdoGType, ref sdoSRID, ref sdoPoint, ref sdoElemt, ref sdoOrdinates, dt, isPolygon);
                 }
 
                 dt.Dispose();
             }
 
             return geometry;
+        }
+
+        private static void coord2SdoGeometryAsString(ref string geometry, string sdoPrefix, string sdoSuffix, ref string sdoGType, ref string sdoSRID, ref string sdoPoint, ref string sdoElemt, ref string sdoOrdinates, DataTable dt, bool isPolygon)
+        {
+            sdoSRID = "NULL";
+
+            if (dt.Rows.Count == 1)
+            {
+                // Punkt, vanlig enkel
+                sdoGType = GeometrySdoGType.Point2D;
+                sdoPoint = "SDO_POINT_TYPE(" + dt.Rows[0]["X"].ToString().Replace(",", ".") + "," + dt.Rows[0]["Y"].ToString().Replace(",", ".") + ",NULL)";
+                sdoElemt = "NULL";
+
+                sdoOrdinates = "NULL";
+            }
+            else
+            {
+                sdoPoint = "NULL";
+
+                // Linje, noder kopplade med raka segment
+                if (isPolygon)
+                {
+                    sdoGType = GeometrySdoGType.Polygon2D;
+                    sdoElemt = "SDO_ELEM_INFO_ARRAY(1,1003,1)";
+                }
+                else
+                {
+                    sdoGType = GeometrySdoGType.Line2D;
+                    sdoElemt = "SDO_ELEM_INFO_ARRAY(1,2,1)";
+                }
+
+                string coordinates = "";
+                string tmpX, tmpY;
+                foreach (DataRow row in dt.Rows)
+                {
+                    tmpX = row["X"].ToString().Replace(",", ".");
+                    tmpY = row["Y"].ToString().Replace(",", ".");
+                    if (coordinates == "")
+                    {
+                        coordinates = tmpX + "," + tmpY;
+                    }
+                    else
+                    {
+                        coordinates += ", " + tmpX + "," + tmpY;
+                    }
+                }
+                sdoOrdinates = "sdo_ordinate_array (" + coordinates + ")";
+            }
+
+            geometry = sdoPrefix +
+                sdoGType + "," +
+                sdoSRID + "," +
+                sdoPoint + "," +
+                sdoElemt + "," +
+                sdoOrdinates +
+                sdoSuffix;
         }
 
         internal static DataTable GetLageskontrollOrderingDomain()
