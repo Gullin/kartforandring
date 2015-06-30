@@ -81,9 +81,7 @@ namespace kartforandring
         {
             string skilje = ", ";
 
-            string geometryColumn = lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? "geom" + skilje : "";
-            string geometry = lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? SdoGeometry.createSdoGeometryFromRelationalData(lageskontroll) + skilje : "";
-
+            string geometry = sqlGeometry(lageskontroll);
 
             // Hanterar NULL för Oracle
             string beskrivning, notering, adressomr, adress, platsovrigt, diarie, fastighet, lageskontrollbestallning;
@@ -111,7 +109,7 @@ namespace kartforandring
                                                   "bev_bygglov_diarie" + skilje +
                                                   "bev_bygglov_lag" + skilje +
                                                   "bev_bygglov_lag_best" + skilje +
-                                                  geometryColumn +
+                                                  "geom" + skilje +
                                                   "guid_tmp" +
                                                   ") VALUES (" +
                                                              "100" + skilje +
@@ -126,7 +124,7 @@ namespace kartforandring
                                                              diarie + skilje +
                                                              "10" + skilje +
                                                              lageskontrollbestallning + skilje +
-                                                             geometry +
+                                                             (string.IsNullOrWhiteSpace(geometry) ? "NULL" : geometry) + skilje +
                                                              "'" + lageskontroll.tmpGuidKey.ToString().Replace("-", "") + "'" +
                                                              ")";
 
@@ -137,8 +135,7 @@ namespace kartforandring
         {
             string skilje = ", ";
 
-            string geometry = lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? skilje + "f.geom = " + SdoGeometry.createSdoGeometryFromRelationalData(lageskontroll) + " " : "";
-
+            string geometry = sqlGeometry(lageskontroll);
 
             // Hanterar NULL för Oracle
             string beskrivning, notering, adressomr, adress, platsovrigt, diarie, fastighet, lageskontrollbestallning;
@@ -162,11 +159,25 @@ namespace kartforandring
                          "    f.bev_plats_adress = " + adress + skilje +
                          "    f.bev_plats_fastighet = " + fastighet + skilje +
                          "    f.bev_plats_ovrigt = " + platsovrigt + skilje +
-                         "    f.bev_bygglov_lag_best = " + lageskontrollbestallning + " " +
-                         geometry +
+                         "    f.bev_bygglov_lag_best = " + lageskontrollbestallning + skilje +
+                         "    f.geom = " + (string.IsNullOrWhiteSpace(geometry) ? "NULL " : geometry + " ") +
                          "WHERE f.fid = " + lageskontroll.Fid;
 
             return sql;
+        }
+
+        private static string sqlGeometry(Bygglovsbeslut lageskontroll)
+        {
+            string geometry = "";
+            if (lageskontroll.IsGeom == "0" || string.IsNullOrWhiteSpace(lageskontroll.IsGeom))
+            {
+                string tmpGeometry = SdoGeometry.createSdoGeometryFromRelationalData(lageskontroll);
+                if (!string.IsNullOrWhiteSpace(tmpGeometry))
+                {
+                    geometry = tmpGeometry;
+                }
+            }
+            return geometry;
         }
     }
 }

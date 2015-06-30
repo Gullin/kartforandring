@@ -60,6 +60,7 @@ namespace kartforandring
             {
                 if (!existBygglov(lageskontroll.Diarie))
                 {
+                    nullifyRelationalPositions(ref lageskontroll);
                     return AddData(lageskontroll);
                 }
                 else
@@ -79,6 +80,7 @@ namespace kartforandring
             {
                 if (existBygglov(lageskontroll.Diarie))
                 {
+                    nullifyRelationalPositions(ref lageskontroll);
                     return UpdateData(lageskontroll);
                 }
                 else
@@ -602,6 +604,22 @@ namespace kartforandring
             dt.Rows.InsertAt(emptyDr, 0);
 
             return dt;
+        }
+
+        internal static void nullifyRelationalPositions(ref Bygglovsbeslut post)
+        {
+            if (post.Adress == "-1")
+            {
+                post.Adress = "";
+            }
+            if (post.AdressOmr == "-1")
+            {
+                post.AdressOmr = "";
+            }
+            if (post.Fastighet == -1)
+            {
+                post.Fastighet = null;
+            }
         }
 
         internal static OleDbConnection GetOleDbConncection()
