@@ -16,8 +16,10 @@ namespace kartforandring
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{action}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                routeTemplate: "api/{controller}/{action}/{jtSorting}",
+                defaults: new {
+                    jtSorting = RouteParameter.Optional
+                }
             );
         }
     }
