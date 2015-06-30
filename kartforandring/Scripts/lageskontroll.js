@@ -13,11 +13,11 @@
             contentType: 'application/json; charset=utf-8'
         },
         actions: {
-            listAction: '/api/kartforandring/lageskontroller',
+            listAction: baseUrl + '/api/kartforandring/lageskontroller',
             createAction: function (postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/api/kartforandring/skapalageskontroll',
+                        url: baseUrl + '/api/kartforandring/skapalageskontroll',
                         type: 'PUT',
                         dataType: 'json',
                         data: postData,
@@ -33,7 +33,7 @@
             updateAction: function (postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/api/kartforandring/uppdateralageskontroll',
+                        url: baseUrl + '/api/kartforandring/uppdateralageskontroll',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -49,7 +49,7 @@
             deleteAction: function (postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/api/kartforandring/raderalageskontroll',
+                        url: baseUrl + '/api/kartforandring/raderalageskontroll',
                         type: 'GET',
                         dataType: 'json',
                         data: postData,
@@ -142,7 +142,7 @@
                         title = "Ingen lägesbestämning";
                     }
                     var $img = $("<img>");
-                    $img.attr("src", "pic/positionNeedle/positionNeedle_" + imgSuffix + ".png");
+                    $img.attr("src", baseUrl + "pic/positionNeedle/positionNeedle_" + imgSuffix + ".png");
                     $img.attr("title", title);
                     return $img;
                 },
@@ -167,11 +167,11 @@
             },
             LageskontrollBestallning: {
                 title: 'Beställning',
-                options: '/api/kartforandring/domainlageskontrollordering'
+                options: baseUrl + '/api/kartforandring/domainlageskontrollordering'
             },
             AdressOmr: {
                 title: 'Adressområde',
-                options: '/api/kartforandring/domainadressomrade',
+                options: baseUrl + '/api/kartforandring/domainadressomrade',
                 list: false
             },
             Adress: {
@@ -181,23 +181,23 @@
                     if (data.source == 'list') {
                         //Return url of all countries for optimization. 
                         //This method is called for each row on the table and jTable caches options based on this url.
-                        return '/api/kartforandring/domainbelagenhetsadress?AdressOmrId=0';
+                        return baseUrl + '/api/kartforandring/domainbelagenhetsadress?AdressOmrId=0';
                     }
 
                     //This code runs when user opens edit/create form or changes continental combobox on an edit/create form.
                     //data.source == 'edit' || data.source == 'create'
-                    return '/api/kartforandring/domainbelagenhetsadress?AdressOmrId=' + data.dependedValues.AdressOmr;
+                    return baseUrl + '/api/kartforandring/domainbelagenhetsadress?AdressOmrId=' + data.dependedValues.AdressOmr;
                 },
                 list: false
             },
             Fastighet: {
                 title: 'Fastighet',
-                options: '/api/kartforandring/domainfastighet',
+                options: baseUrl + '/api/kartforandring/domainfastighet',
                 list: false
             }
         }
     });
 
-    //Load student list from server
+    // Ladda lägeskontroller från server
     $('#LageskontrollTableContainer').jtable('load');
 });

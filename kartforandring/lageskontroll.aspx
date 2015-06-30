@@ -13,14 +13,20 @@
 
     <link href="Scripts/jtable/themes/lightcolor/gray/jtable.css" rel="stylesheet" />
 
-    <script src="Scripts/jquery-1.9.1.min.js"></script>
-    <script src="Scripts/jquery-ui-1.9.2.min.js"></script>
 
-    <script src="Scripts/jtable/jquery.jtable.min.js"></script>
-    <script src="Scripts/jtable/extensions/jquery.jtable.aspnetpagemethods.min.js"></script>
-    <script src="Scripts/jtable/localization/jquery.jtable.se.js"></script>
+    <!-- Settings -->
+    <script type="text/javascript">
+        var baseUrl = '<%=ResolveClientUrl("~")%>';
+    </script>
 
-    <script src="Scripts/lageskontroll.js"></script>
+    <script src='<%=ResolveClientUrl("Scripts/jquery-1.9.1.min.js")%>'></script>
+    <script src='<%=ResolveClientUrl("Scripts/jquery-ui-1.9.2.min.js")%>'></script>
+
+    <script src='<%=ResolveClientUrl("Scripts/jtable/jquery.jtable.min.js")%>'></script>
+    <script src='<%=ResolveClientUrl("Scripts/jtable/extensions/jquery.jtable.aspnetpagemethods.min.js")%>'></script>
+    <script src='<%=ResolveClientUrl("Scripts/jtable/localization/jquery.jtable.se.js")%>'></script>
+
+    <script src='<%=ResolveClientUrl("Scripts/lageskontroll.js")%>'></script>
 </head>
 
 <body>
