@@ -170,7 +170,14 @@ namespace kartforandring
                 OleDbConnection con = GetOleDbConncection();
                 OleDbCommand com = new OleDbCommand(sqlStrings.sqlInsertLageskontroll(lageskontroll), con);
 
-                // Inserts row
+                if (Regex.IsMatch(lageskontroll.AdressOmr, regexpPatternGuid) || 
+                    Regex.IsMatch(lageskontroll.Adress, regexpPatternGuid) || 
+                    Regex.IsMatch(lageskontroll.Fastighet.ToString(), regexpPatternFastighet))
+                {
+                    lageskontroll.IsGeom = "1";
+                }
+
+                // Inserts resultingRow
                 com.Connection.Open();
                 int affectedRows = com.ExecuteNonQuery();
 
@@ -218,8 +225,8 @@ namespace kartforandring
                     levelOfPosition.Remove(4, 1);
                     levelOfPosition.Insert(4, levelOfPositionPart);
 
-                    // Fill returning row
-                    dr["FID"] = string.IsNullOrWhiteSpace(lageskontroll.Fid.ToString()) ? DBNull.Value : (object)lageskontroll.Fid;
+                    // Fill returning resultingRow
+                    dr["FID"] = lageskontroll.Fid.ToString();
                     dr["IS_GEOM"] = string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? DBNull.Value : (object)lageskontroll.IsGeom;
                     dr["KAR_OBJ"] = string.IsNullOrWhiteSpace(lageskontroll.KarObj.ToString()) ? DBNull.Value : (object)lageskontroll.KarObj;
                     dr["KAR_OBJ_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.KarObjText) ? DBNull.Value : (object)lageskontroll.KarObjText;
@@ -282,18 +289,40 @@ namespace kartforandring
                 DataTable dt = new DataTable();
 
                 OleDbConnection con = GetOleDbConncection();
-                OleDbCommand com = new OleDbCommand(sqlStrings.sqlUpdateLageskontroll(lageskontroll), con);
-
+                OleDbCommand com = new OleDbCommand(sqlStrings.sqlSelectBygglovsbeslut("AND f.fid = " + lageskontroll.Fid.ToString() + " "), con);
+                OleDbDataReader dr;
                 com.Connection.Open();
+                dr = com.ExecuteReader();
+
+                dt.Load(dr);
+
+                dr.Close();
+                dr.Dispose();
+
+                if (dt.Rows.Count == 1)
+                {
+                    DataRow row = dt.Rows[0];
+                    lageskontroll.IsGeom = row["IS_GEOM"].ToString();
+                    lageskontroll.LevelOfPosition = row["LEVEL_OF_POSITION"].ToString().ToCharArray();
+                    lageskontroll.PlatsOvrigt = row["BEV_PLATS_OVRIGT"].ToString();
+                }
+                else
+                {
+                    throw new Exception("LKR-00006", new Exception("Ändringen kunde INTE genomföras. Databasen överensstämmer inte med tabell. Prova igen och om problemet återkommer kontakta MBK- och GIS-avdelningen (gis@landskrona.se)"));
+                }
+
+                com.CommandText = sqlStrings.sqlUpdateLageskontroll(lageskontroll);
+
                 int affectedRows = com.ExecuteNonQuery();
                 if (affectedRows > 0)
                 {
+
                     dt = createEmptyBygglovsbeslutTable();
 
-                    DataRow dr = dt.NewRow();
+                    DataRow resultingRow = dt.NewRow();
 
                     // Redefine level of positioning of object
-                    StringBuilder levelOfPosition = new StringBuilder("00000");
+                    StringBuilder levelOfPosition = new StringBuilder(new string(lageskontroll.LevelOfPosition));
                     string levelOfPositionPart = string.IsNullOrWhiteSpace(lageskontroll.PlatsOvrigt) ? "0" : "1";
                     levelOfPosition.Remove(0, 1);
                     levelOfPosition.Insert(0, levelOfPositionPart);
@@ -310,46 +339,46 @@ namespace kartforandring
                     levelOfPosition.Remove(4, 1);
                     levelOfPosition.Insert(4, levelOfPositionPart);
 
-                    // Fill returning row
-                    dr["FID"] = string.IsNullOrWhiteSpace(lageskontroll.Fid.ToString()) ? DBNull.Value : (object)lageskontroll.Fid;
-                    dr["IS_GEOM"] = string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? DBNull.Value : (object)lageskontroll.IsGeom;
-                    dr["KAR_OBJ"] = string.IsNullOrWhiteSpace(lageskontroll.KarObj.ToString()) ? DBNull.Value : (object)lageskontroll.KarObj;
-                    dr["KAR_OBJ_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.KarObjText) ? DBNull.Value : (object)lageskontroll.KarObjText;
-                    dr["KAR_TYP"] = string.IsNullOrWhiteSpace(lageskontroll.KarTyp.ToString()) ? DBNull.Value : (object)lageskontroll.KarTyp;
-                    dr["KAR_TYP_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.KarTypText) ? DBNull.Value : (object)lageskontroll.KarTypText;
-                    dr["USER_MODIFIED"] = string.IsNullOrWhiteSpace(lageskontroll.UserModified) ? DBNull.Value : (object)lageskontroll.UserModified;
-                    dr["DATE_MODIFIED"] = string.IsNullOrWhiteSpace(lageskontroll.DateModified.ToString()) ? DBNull.Value : (object)lageskontroll.DateModified;
-                    dr["BEV_NOTERING"] = string.IsNullOrWhiteSpace(lageskontroll.Notering) ? DBNull.Value : (object)lageskontroll.Notering;
-                    dr["BEV_BESKRIVNING"] = string.IsNullOrWhiteSpace(lageskontroll.Beskrivning) ? DBNull.Value : (object)lageskontroll.Beskrivning;
-                    dr["BEV_INKOMMET"] = string.IsNullOrWhiteSpace(lageskontroll.Inkommit.ToString()) ? DBNull.Value : (object)lageskontroll.Inkommit;
-                    dr["BEV_PABORJAT"] = string.IsNullOrWhiteSpace(lageskontroll.Paborjat.ToString()) ? DBNull.Value : (object)lageskontroll.Paborjat;
-                    dr["BEV_UTFORARE"] = string.IsNullOrWhiteSpace(lageskontroll.Utforare) ? DBNull.Value : (object)lageskontroll.Utforare;
-                    dr["BEV_AVSLUTAT"] = string.IsNullOrWhiteSpace(lageskontroll.Avslutat.ToString()) ? DBNull.Value : (object)lageskontroll.Avslutat;
-                    dr["BEV_PLATS_ADRESS"] = string.IsNullOrWhiteSpace(lageskontroll.Adress) ? DBNull.Value : (object)lageskontroll.Adress;
-                    dr["BEV_PLATS_ADRESS_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.AdressText) ? DBNull.Value : (object)lageskontroll.AdressText;
-                    dr["BEV_PLATS_FASTIGHET"] = string.IsNullOrWhiteSpace(lageskontroll.Fastighet.ToString()) ? DBNull.Value : (object)lageskontroll.Fastighet;
-                    dr["BEV_PLATS_FASTIGHET_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.FastighetText) ? DBNull.Value : (object)lageskontroll.FastighetText;
-                    dr["BEV_PLATS_ADRESSOMR"] = string.IsNullOrWhiteSpace(lageskontroll.AdressOmr) ? DBNull.Value : (object)lageskontroll.AdressOmr;
-                    dr["BEV_PLATS_ADRESSOMR_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.AdressOmrText) ? DBNull.Value : (object)lageskontroll.AdressOmrText;
-                    dr["BEV_PLATS_OVRIGT"] = string.IsNullOrWhiteSpace(lageskontroll.PlatsOvrigt) ? DBNull.Value : (object)lageskontroll.PlatsOvrigt;
-                    dr["BEV_BYGGLOV_DIARIE"] = string.IsNullOrWhiteSpace(lageskontroll.Diarie) ? DBNull.Value : (object)lageskontroll.Diarie;
-                    dr["BEV_BYGGLOV_UTS"] = string.IsNullOrWhiteSpace(lageskontroll.Utsattning.ToString()) ? DBNull.Value : (object)lageskontroll.Utsattning;
-                    dr["BEV_BYGGLOV_UTS_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.UtsattningText) ? DBNull.Value : (object)lageskontroll.UtsattningText;
-                    dr["BEV_BYGGLOV_LAG"] = string.IsNullOrWhiteSpace(lageskontroll.Lageskontroll.ToString()) ? DBNull.Value : (object)lageskontroll.Lageskontroll;
-                    dr["BEV_BYGGLOV_LAG_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.LageskontrollText) ? DBNull.Value : (object)lageskontroll.LageskontrollText;
-                    dr["BEV_BYGGLOV_ATTEFALL"] = string.IsNullOrWhiteSpace(lageskontroll.Attefall.ToString()) ? DBNull.Value : (object)lageskontroll.Attefall;
-                    dr["BEV_BYGGLOV_ATTEFALL_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.AttefallText) ? DBNull.Value : (object)lageskontroll.AttefallText;
-                    dr["BEV_BYGGLOV_RIV"] = string.IsNullOrWhiteSpace(lageskontroll.Riv.ToString()) ? DBNull.Value : (object)lageskontroll.Riv;
-                    dr["BEV_BYGGLOV_RIV_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.RivText) ? DBNull.Value : (object)lageskontroll.RivText;
-                    dr["BEV_BYGGLOV_ANDAMAL"] = string.IsNullOrWhiteSpace(lageskontroll.Andamal.ToString()) ? DBNull.Value : (object)lageskontroll.Andamal;
-                    dr["BEV_BYGGLOV_ANDAMAL_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.AndamalText) ? DBNull.Value : (object)lageskontroll.AndamalText;
-                    dr["BEV_BYGGLOV_UTS_BEST"] = string.IsNullOrWhiteSpace(lageskontroll.UtsattningBestallning.ToString()) ? DBNull.Value : (object)lageskontroll.UtsattningBestallning;
-                    dr["BEV_BYGGLOV_UTS_BEST_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.UtsattningBestallningText) ? DBNull.Value : (object)lageskontroll.UtsattningBestallningText;
-                    dr["BEV_BYGGLOV_LAG_BEST"] = string.IsNullOrWhiteSpace(lageskontroll.LageskontrollBestallning.ToString()) ? DBNull.Value : (object)lageskontroll.LageskontrollBestallning;
-                    dr["BEV_BYGGLOV_LAG_BEST_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.LageskontrollBestallningText) ? DBNull.Value : (object)lageskontroll.LageskontrollBestallningText;
-                    dr["LEVEL_OF_POSITION"] = levelOfPosition.ToString();
+                    // Fill returning resultingRow
+                    resultingRow["FID"] = string.IsNullOrWhiteSpace(lageskontroll.Fid.ToString()) ? DBNull.Value : (object)lageskontroll.Fid;
+                    resultingRow["IS_GEOM"] = string.IsNullOrWhiteSpace(lageskontroll.IsGeom) ? DBNull.Value : (object)lageskontroll.IsGeom;
+                    resultingRow["KAR_OBJ"] = string.IsNullOrWhiteSpace(lageskontroll.KarObj.ToString()) ? DBNull.Value : (object)lageskontroll.KarObj;
+                    resultingRow["KAR_OBJ_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.KarObjText) ? DBNull.Value : (object)lageskontroll.KarObjText;
+                    resultingRow["KAR_TYP"] = string.IsNullOrWhiteSpace(lageskontroll.KarTyp.ToString()) ? DBNull.Value : (object)lageskontroll.KarTyp;
+                    resultingRow["KAR_TYP_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.KarTypText) ? DBNull.Value : (object)lageskontroll.KarTypText;
+                    resultingRow["USER_MODIFIED"] = string.IsNullOrWhiteSpace(lageskontroll.UserModified) ? DBNull.Value : (object)lageskontroll.UserModified;
+                    resultingRow["DATE_MODIFIED"] = string.IsNullOrWhiteSpace(lageskontroll.DateModified.ToString()) ? DBNull.Value : (object)lageskontroll.DateModified;
+                    resultingRow["BEV_NOTERING"] = string.IsNullOrWhiteSpace(lageskontroll.Notering) ? DBNull.Value : (object)lageskontroll.Notering;
+                    resultingRow["BEV_BESKRIVNING"] = string.IsNullOrWhiteSpace(lageskontroll.Beskrivning) ? DBNull.Value : (object)lageskontroll.Beskrivning;
+                    resultingRow["BEV_INKOMMET"] = string.IsNullOrWhiteSpace(lageskontroll.Inkommit.ToString()) ? DBNull.Value : (object)lageskontroll.Inkommit;
+                    resultingRow["BEV_PABORJAT"] = string.IsNullOrWhiteSpace(lageskontroll.Paborjat.ToString()) ? DBNull.Value : (object)lageskontroll.Paborjat;
+                    resultingRow["BEV_UTFORARE"] = string.IsNullOrWhiteSpace(lageskontroll.Utforare) ? DBNull.Value : (object)lageskontroll.Utforare;
+                    resultingRow["BEV_AVSLUTAT"] = string.IsNullOrWhiteSpace(lageskontroll.Avslutat.ToString()) ? DBNull.Value : (object)lageskontroll.Avslutat;
+                    resultingRow["BEV_PLATS_ADRESS"] = string.IsNullOrWhiteSpace(lageskontroll.Adress) ? DBNull.Value : (object)lageskontroll.Adress;
+                    resultingRow["BEV_PLATS_ADRESS_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.AdressText) ? DBNull.Value : (object)lageskontroll.AdressText;
+                    resultingRow["BEV_PLATS_FASTIGHET"] = string.IsNullOrWhiteSpace(lageskontroll.Fastighet.ToString()) ? DBNull.Value : (object)lageskontroll.Fastighet;
+                    resultingRow["BEV_PLATS_FASTIGHET_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.FastighetText) ? DBNull.Value : (object)lageskontroll.FastighetText;
+                    resultingRow["BEV_PLATS_ADRESSOMR"] = string.IsNullOrWhiteSpace(lageskontroll.AdressOmr) ? DBNull.Value : (object)lageskontroll.AdressOmr;
+                    resultingRow["BEV_PLATS_ADRESSOMR_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.AdressOmrText) ? DBNull.Value : (object)lageskontroll.AdressOmrText;
+                    resultingRow["BEV_PLATS_OVRIGT"] = string.IsNullOrWhiteSpace(lageskontroll.PlatsOvrigt) ? DBNull.Value : (object)lageskontroll.PlatsOvrigt;
+                    resultingRow["BEV_BYGGLOV_DIARIE"] = string.IsNullOrWhiteSpace(lageskontroll.Diarie) ? DBNull.Value : (object)lageskontroll.Diarie;
+                    resultingRow["BEV_BYGGLOV_UTS"] = string.IsNullOrWhiteSpace(lageskontroll.Utsattning.ToString()) ? DBNull.Value : (object)lageskontroll.Utsattning;
+                    resultingRow["BEV_BYGGLOV_UTS_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.UtsattningText) ? DBNull.Value : (object)lageskontroll.UtsattningText;
+                    resultingRow["BEV_BYGGLOV_LAG"] = string.IsNullOrWhiteSpace(lageskontroll.Lageskontroll.ToString()) ? DBNull.Value : (object)lageskontroll.Lageskontroll;
+                    resultingRow["BEV_BYGGLOV_LAG_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.LageskontrollText) ? DBNull.Value : (object)lageskontroll.LageskontrollText;
+                    resultingRow["BEV_BYGGLOV_ATTEFALL"] = string.IsNullOrWhiteSpace(lageskontroll.Attefall.ToString()) ? DBNull.Value : (object)lageskontroll.Attefall;
+                    resultingRow["BEV_BYGGLOV_ATTEFALL_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.AttefallText) ? DBNull.Value : (object)lageskontroll.AttefallText;
+                    resultingRow["BEV_BYGGLOV_RIV"] = string.IsNullOrWhiteSpace(lageskontroll.Riv.ToString()) ? DBNull.Value : (object)lageskontroll.Riv;
+                    resultingRow["BEV_BYGGLOV_RIV_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.RivText) ? DBNull.Value : (object)lageskontroll.RivText;
+                    resultingRow["BEV_BYGGLOV_ANDAMAL"] = string.IsNullOrWhiteSpace(lageskontroll.Andamal.ToString()) ? DBNull.Value : (object)lageskontroll.Andamal;
+                    resultingRow["BEV_BYGGLOV_ANDAMAL_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.AndamalText) ? DBNull.Value : (object)lageskontroll.AndamalText;
+                    resultingRow["BEV_BYGGLOV_UTS_BEST"] = string.IsNullOrWhiteSpace(lageskontroll.UtsattningBestallning.ToString()) ? DBNull.Value : (object)lageskontroll.UtsattningBestallning;
+                    resultingRow["BEV_BYGGLOV_UTS_BEST_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.UtsattningBestallningText) ? DBNull.Value : (object)lageskontroll.UtsattningBestallningText;
+                    resultingRow["BEV_BYGGLOV_LAG_BEST"] = string.IsNullOrWhiteSpace(lageskontroll.LageskontrollBestallning.ToString()) ? DBNull.Value : (object)lageskontroll.LageskontrollBestallning;
+                    resultingRow["BEV_BYGGLOV_LAG_BEST_TEXT"] = string.IsNullOrWhiteSpace(lageskontroll.LageskontrollBestallningText) ? DBNull.Value : (object)lageskontroll.LageskontrollBestallningText;
+                    resultingRow["LEVEL_OF_POSITION"] = levelOfPosition;
 
-                    dt.Rows.Add(dr);
+                    dt.Rows.Add(resultingRow);
                 }
                 else
                 {
