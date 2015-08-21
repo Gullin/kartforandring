@@ -50,8 +50,8 @@ namespace kartforandring
 
         public static DataTable GetBygglovsbeslutMedLageskontroll()
         {
-            //TODO: Inte NULL? Värde kan visa om lägeskontroll ska göras (beslut finns) eller om kontrollen redan är gjord
-            return GetData(sqlStrings.sqlSelectBygglovsbeslut("AND f.bev_bygglov_lag IS NOT NULL "));
+            return GetData(sqlStrings.sqlSelectBygglovsbeslut("AND  f.bev_bygglov_lag = 10  " +
+                                                              "AND  f.bev_avslutat IS NULL "));
         }
 
         public static DataTable AddLageskontroll(Bygglovsbeslut lageskontroll)
