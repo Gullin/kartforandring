@@ -170,9 +170,7 @@ namespace kartforandring
                 OleDbConnection con = GetOleDbConncection();
                 OleDbCommand com = new OleDbCommand(sqlStrings.sqlInsertLageskontroll(lageskontroll), con);
 
-                if (Regex.IsMatch(lageskontroll.AdressOmr, regexpPatternGuid) || 
-                    Regex.IsMatch(lageskontroll.Adress, regexpPatternGuid) || 
-                    Regex.IsMatch(lageskontroll.Fastighet.ToString(), regexpPatternFastighet))
+                if (lageskontroll.AdressOmr != null || lageskontroll.Adress != null || lageskontroll.Fastighet != null)
                 {
                     lageskontroll.IsGeom = "1";
                 }
