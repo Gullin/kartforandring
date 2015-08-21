@@ -89,6 +89,9 @@
                 var diarieValue = $form.find('[name="Diarie"]').val();
                 var arendeValue = $form.find('[name="Beskrivning"]').val();
                 var bestallningValue = $form.find('[name="LageskontrollBestallning"]').val();
+                var adressOmrValue = $form.find('[name="AdressOmr"]').val();
+                var adressValue = $form.find('[name="Adress"]').val();
+                var fastighetValue = $form.find('[name="Fastighet"]').val();
 
                 var diariePattern = /^(19\d{2}\.\d{1,4})$|^(20\d{2}\.\d{1,4})$/;
                 if (!diariePattern.test(diarieValue)) {
@@ -103,6 +106,11 @@
 
                 if (bestallningValue == "") {
                     alert("Beställningsinitierar saknas i fältet Beställning!");
+                    return false;
+                }
+
+                if ((adressOmrValue == "-1" || adressOmrValue == null) && (adressValue == "-1" || adressValue == null) && (fastighetValue == "-1" || fastighetValue == null)) {
+                    alert("Någon form av lägesbindning krävs.\nVälj adressområde, belägenhetsadress och/eller fastighet.");
                     return false;
                 }
             }
