@@ -148,6 +148,12 @@ namespace kartforandring
         {
             try
             {
+                string patternDiarie = @"^(19\d{2}\.\d{1,4})$|^(20\d{2}\.\d{1,4})$";
+                if (!Regex.IsMatch(lageskontroll.Diarie, patternDiarie))
+                {
+                    throw new Exception("LKR-00007", new Exception("Diarie/aktbeteckning (" + lageskontroll.Diarie.ToString() + ") är i fel format. Ska bestå av ett årtal mellan 1900-2099, punkt och sedan löpnummer, tillåtet 1 - 4 tal (ÅÅÅÅ.####)."));
+                }
+
                 DataTable dt = new DataTable();
                 lageskontroll.tmpGuidKey = Guid.NewGuid();
                 

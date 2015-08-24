@@ -61,6 +61,7 @@ namespace kartforandring
                     {
                         // Konvertera objekt Bygglovsbeslut till objekt BygglovsbeslutDiarie
                         IList<BygglovsbeslutDiarie> sortingListBygglovsbeslutSplitDiarie = new List<BygglovsbeslutDiarie>();
+                        string diariePattern = @"^(19\d{2}\.\d{1,4})$|^(20\d{2}\.\d{1,4})$";
                         foreach (Bygglovsbeslut bygglovBeslut in currentListBygglovsbeslut)
                         {
                             Type tBB = bygglovBeslut.GetType();
@@ -70,25 +71,30 @@ namespace kartforandring
                             {
                                 if (piBB.Name == "Diarie")
                                 {
-                                    string[] yearAndNbr = piBB.GetValue(bygglovBeslut).ToString().Split('.');
                                     foreach (PropertyInfo piBBD in tBBD.GetProperties())
                                     {
                                         if (piBBD.Name == "Diarie")
                                         {
                                             piBBD.SetValue(bygglovsbeslutDiarie, piBB.GetValue(bygglovBeslut));
                                         }
-                                        if (piBBD.Name == "DiarieAr")
+
+                                        string diarie = piBB.GetValue(bygglovBeslut).ToString();
+                                        if (System.Text.RegularExpressions.Regex.IsMatch(diarie, diariePattern))
                                         {
-                                            if (!string.IsNullOrWhiteSpace(yearAndNbr[0]))
+                                            string[] yearAndNbr = diarie.Split('.');
+                                            if (piBBD.Name == "DiarieAr")
                                             {
-                                                piBBD.SetValue(bygglovsbeslutDiarie, Convert.ToInt32(yearAndNbr[0]));
+                                                if (!string.IsNullOrWhiteSpace(yearAndNbr[0]))
+                                                {
+                                                    piBBD.SetValue(bygglovsbeslutDiarie, Convert.ToInt32(yearAndNbr[0]));
+                                                }
                                             }
-                                        }
-                                        if (piBBD.Name == "DiarieSerialNbr")
-                                        {
-                                            if (!string.IsNullOrWhiteSpace(yearAndNbr[1]))
+                                            if (piBBD.Name == "DiarieSerialNbr")
                                             {
-                                                piBBD.SetValue(bygglovsbeslutDiarie, Convert.ToInt32(yearAndNbr[1]));
+                                                if (!string.IsNullOrWhiteSpace(yearAndNbr[1]))
+                                                {
+                                                    piBBD.SetValue(bygglovsbeslutDiarie, Convert.ToInt32(yearAndNbr[1]));
+                                                }
                                             }
                                         }
                                     }
