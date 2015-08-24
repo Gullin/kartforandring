@@ -2,6 +2,14 @@
 
     $.datepicker.setDefaults($.datepicker.regional["sv"]);
 
+    (function ($) {
+
+        $.extend(true, $.hik.jtable.prototype.options.messages, {
+            addNewRecord: 'Lägg till bygglov med lägeskontroll',
+        });
+
+    })(jQuery);
+
     //Prepare jtable plugin
     $('#LageskontrollTableContainer').jtable({
         title: 'Bygglov med lägeskontroll',
