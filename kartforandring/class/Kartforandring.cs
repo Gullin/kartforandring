@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 
 namespace kartforandring
@@ -30,7 +31,8 @@ namespace kartforandring
                 if (!string.IsNullOrEmpty(jtSorting))
                 {
                     var sortExpressions = new List<Tuple<string, string>>();
-                    string[] columns = jtSorting.Split(new char[] { ',' }); 
+                    string[] columns = jtSorting.Split(new char[] { ',' });
+                    bool isDiarieSorted = false;
                     foreach (string column in columns)
                     {
                         string[] sorter = column.Trim().Split(new char[] { ' ' }, 2);
@@ -40,15 +42,107 @@ namespace kartforandring
                         {
                             throw new ArgumentException("Invalid sorting order");
                         }
-                        sortExpressions.Add(new Tuple<string, string>(fieldName, sortOrder));
+
+                        
+                        if (fieldName == "Diarie")
+                        {
+                            sortExpressions.Add(new Tuple<string, string>("DiarieAr", sortOrder));
+                            sortExpressions.Add(new Tuple<string, string>("DiarieSerialNbr", sortOrder));
+                            isDiarieSorted = true;
+                        }
+                        else
+                        {
+                            sortExpressions.Add(new Tuple<string, string>(fieldName, sortOrder));
+                        }
                     }
 
-                    IList<Bygglovsbeslut> sortingListPlans = (List<Bygglovsbeslut>)this.Records;
+                    IList<Bygglovsbeslut> currentListBygglovsbeslut = (List<Bygglovsbeslut>)this.Records;
+                    if (isDiarieSorted)
+                    {
+                        // Konvertera objekt Bygglovsbeslut till objekt BygglovsbeslutDiarie
+                        IList<BygglovsbeslutDiarie> sortingListBygglovsbeslutSplitDiarie = new List<BygglovsbeslutDiarie>();
+                        foreach (Bygglovsbeslut bygglovBeslut in currentListBygglovsbeslut)
+                        {
+                            Type tBB = bygglovBeslut.GetType();
+                            BygglovsbeslutDiarie bygglovsbeslutDiarie = new BygglovsbeslutDiarie();
+                            Type tBBD = bygglovsbeslutDiarie.GetType();
+                            foreach (PropertyInfo piBB in tBB.GetProperties())
+                            {
+                                if (piBB.Name == "Diarie")
+                                {
+                                    string[] yearAndNbr = piBB.GetValue(bygglovBeslut).ToString().Split('.');
+                                    foreach (PropertyInfo piBBD in tBBD.GetProperties())
+                                    {
+                                        if (piBBD.Name == "Diarie")
+                                        {
+                                            piBBD.SetValue(bygglovsbeslutDiarie, piBB.GetValue(bygglovBeslut));
+                                        }
+                                        if (piBBD.Name == "DiarieAr")
+                                        {
+                                            if (!string.IsNullOrWhiteSpace(yearAndNbr[0]))
+                                            {
+                                                piBBD.SetValue(bygglovsbeslutDiarie, Convert.ToInt32(yearAndNbr[0]));
+                                            }
+                                        }
+                                        if (piBBD.Name == "DiarieSerialNbr")
+                                        {
+                                            if (!string.IsNullOrWhiteSpace(yearAndNbr[1]))
+                                            {
+                                                piBBD.SetValue(bygglovsbeslutDiarie, Convert.ToInt32(yearAndNbr[1]));
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (PropertyInfo piBBD in tBBD.GetProperties())
+                                    {
+                                        if (piBBD.Name == piBB.Name && piBBD.PropertyType.Name == piBB.PropertyType.Name)
+                                        {
+                                            piBBD.SetValue(bygglovsbeslutDiarie, piBB.GetValue(bygglovBeslut));
+                                        }
+                                    }
+                                }
+                            }
 
-                    return this.Records = UtilityDynamicLinqMultiSorting.MultipleSort<Bygglovsbeslut>(
-                        sortingListPlans,
-                        sortExpressions)
-                        .ToList<Bygglovsbeslut>();
+                            sortingListBygglovsbeslutSplitDiarie.Add(bygglovsbeslutDiarie);
+                        }
+
+                        // Sortera bygglovsbeslut med diarie delat på år och löpnummer
+                        sortingListBygglovsbeslutSplitDiarie = UtilityDynamicLinqMultiSorting.MultipleSort<BygglovsbeslutDiarie>(
+                            sortingListBygglovsbeslutSplitDiarie,
+                            sortExpressions)
+                            .ToList<BygglovsbeslutDiarie>();
+
+                        // Konvertera objekt BygglovsbeslutDiarie till objekt Bygglovsbeslut
+                        IList<Bygglovsbeslut> sortedListBygglovsbeslut = new List<Bygglovsbeslut>();
+                        foreach (BygglovsbeslutDiarie bygglovsbeslutDiarie in sortingListBygglovsbeslutSplitDiarie)
+                        {
+                            Type tBBD = bygglovsbeslutDiarie.GetType();
+                            Bygglovsbeslut bygglovsbeslut = new Bygglovsbeslut();
+                            Type tBB = bygglovsbeslut.GetType();
+                            foreach (PropertyInfo piBBD in tBBD.GetProperties())
+                            {
+                                foreach (PropertyInfo piBB in tBB.GetProperties())
+                                {
+                                    if (piBBD.Name == piBB.Name && piBBD.PropertyType.Name == piBB.PropertyType.Name)
+                                    {
+                                        piBB.SetValue(bygglovsbeslut, piBB.GetValue(bygglovsbeslutDiarie));
+                                    }
+                                }
+                            }
+                            sortedListBygglovsbeslut.Add(bygglovsbeslut);
+                        }
+
+                        return this.Records = sortedListBygglovsbeslut;
+                    }
+                    else
+                    {
+                        return this.Records = UtilityDynamicLinqMultiSorting.MultipleSort<Bygglovsbeslut>(
+                            currentListBygglovsbeslut,
+                            sortExpressions)
+                            .ToList<Bygglovsbeslut>();
+                    }
                 }
                 else
                 {
@@ -390,6 +484,13 @@ namespace kartforandring
             }
 
         }
+    }
+
+
+    public class BygglovsbeslutDiarie : Bygglovsbeslut
+    {
+        public int? DiarieAr { get; set; }
+        public int? DiarieSerialNbr { get; set; }
     }
 
 
