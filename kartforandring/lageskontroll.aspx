@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Lägeskontroller - interna eller externa beställda</title>
+    <title>Beställning lägeskontroller</title>
 
     <link href="Styles/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" />
     <link href="Styles/page-UI-centering.css" rel="stylesheet" />
@@ -33,7 +33,8 @@
     <form id="form1" runat="server">
         <div id="container">
             <h1>För internbeställning av lägeskontroller</h1>
-            <h3>Tabellen listar registrerade bygglov hos MBK- och GIS-avdelningen. Beställningskolumnen indikerar om lägeskontroll är beställd av Stadsarkitektavdelningen (Intern) eller byggherre (Extern).</h3>
+            <h3>Tabellen listar registrerade bygglov hos MBK- och GIS-avdelningen. <br />
+                Kolumnen "Beställning" indikerar om lägeskontroll är beställd av Stadsarkitektavdelningen (Intern) eller byggherre (Extern).</h3>
             <div id="LageskontrollTableContainer"></div>
         </div>
 
