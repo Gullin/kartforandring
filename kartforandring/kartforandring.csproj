@@ -132,6 +132,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tooltip.min.css" />
+    <Content Include="dashboard.aspx" />
     <Content Include="Global.asax" />
     <None Include="Properties\PublishProfiles\Kartförändring.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
@@ -329,13 +330,22 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="class\Kartforandring.Brister.SqlStrings.cs" />
     <Compile Include="class\Kartforandring.DB.cs" />
     <Compile Include="class\Kartforandring.sqlStrings.cs" />
     <Compile Include="class\Kartforandring.cs" />
     <Compile Include="class\Kartforandring.Geometry.cs" />
     <Compile Include="class\UtilityApplicationAssembly.cs" />
     <Compile Include="class\UtilityDynamicLinqMultiSorting.cs" />
+    <Compile Include="Controllers\BristerController.cs" />
     <Compile Include="Controllers\KartforandringController.cs" />
+    <Compile Include="dashboard.aspx.cs">
+      <DependentUpon>dashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="dashboard.aspx.designer.cs">
+      <DependentUpon>dashboard.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

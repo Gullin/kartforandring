@@ -16,6 +16,9 @@ namespace Kartforandring
             routes.MapPageRoute("",
                                 "kartforandring",
                                 "~/kartforandring.aspx");
+            routes.MapPageRoute("",
+                                "kontrollpanel",
+                                "~/dashboard.aspx");
         }
     }
 }
