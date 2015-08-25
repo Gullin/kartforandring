@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Routing;
 
-namespace kartforandring
+namespace Kartforandring
 {
     public class RouteConfig
     {

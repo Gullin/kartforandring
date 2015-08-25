@@ -7,7 +7,7 @@ using System.Web.Security;
 using System.Web.SessionState;
 using System.Web.Http;
 
-namespace kartforandring
+namespace Kartforandring
 {
     public class Global : HttpApplication
     {

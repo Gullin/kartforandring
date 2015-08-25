@@ -5,9 +5,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace kartforandring
+namespace Kartforandring
 {
-    public partial class kartforandring : System.Web.UI.Page
+    public partial class Kartforandring : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {

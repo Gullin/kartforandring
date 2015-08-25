@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace kartforandring
+namespace Kartforandring
 {
 	public static class UtilityDynamicLinqMultiSorting
 	{

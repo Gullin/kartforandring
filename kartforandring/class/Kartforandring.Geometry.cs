@@ -1,8 +1,8 @@
 ﻿using System.Data;
 using System.Data.OleDb;
-using kartforandring;
+using Kartforandring;
 
-namespace kartforandring.Geometry
+namespace Kartforandring.Geometry
 {
 	public static class SdoGeometry
 	{

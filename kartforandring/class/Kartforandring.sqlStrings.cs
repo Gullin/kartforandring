@@ -1,8 +1,8 @@
-﻿using kartforandring.Geometry;
+﻿using Kartforandring.Geometry;
 
-namespace kartforandring
+namespace Kartforandring
 {
-	public static class sqlStrings
+	public static class SqlStrings
 	{
         internal static string sqlDeleteLogicalKartforandring(string where)
         {

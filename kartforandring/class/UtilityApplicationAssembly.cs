@@ -8,7 +8,7 @@ using System.Web;
 using System.Web.Compilation;
 
 
-namespace kartforandring
+namespace Kartforandring
 {
     public static class UtilityApplicationAssembly
     {

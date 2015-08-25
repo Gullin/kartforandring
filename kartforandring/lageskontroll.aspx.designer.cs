@@ -7,10 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace kartforandring {
+namespace Kartforandring {
     
     
-    public partial class lageskontroll {
+    public partial class Lageskontroll {
         
         /// <summary>
         /// form1 control.

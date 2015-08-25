@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="kartforandring.aspx.cs" Inherits="kartforandring.kartforandring" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="kartforandring.aspx.cs" Inherits="Kartforandring.Kartforandring" %>
 
 <!DOCTYPE html>
 

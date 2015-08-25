@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace kartforandring
+namespace Kartforandring
 {
 	public static class DB
 	{
@@ -45,12 +45,12 @@ namespace kartforandring
 
         public static DataTable GetBygglovsbeslut()
         {
-            return GetData(sqlStrings.sqlSelectBygglovsbeslut(""));
+            return GetData(SqlStrings.sqlSelectBygglovsbeslut(""));
         }
 
         public static DataTable GetBygglovsbeslutMedLageskontroll()
         {
-            return GetData(sqlStrings.sqlSelectBygglovsbeslut("AND  f.bev_bygglov_lag = 10  " +
+            return GetData(SqlStrings.sqlSelectBygglovsbeslut("AND  f.bev_bygglov_lag = 10  " +
                                                               "AND  f.bev_avslutat IS NULL "));
         }
 
@@ -98,7 +98,7 @@ namespace kartforandring
         {
             try
             {
-                DeleteLogicalData(sqlStrings.sqlDeleteLogicalKartforandring("f.bev_bygglov_lag IS NOT NULL AND f.fid = " + fid.ToString()));
+                DeleteLogicalData(SqlStrings.sqlDeleteLogicalKartforandring("f.bev_bygglov_lag IS NOT NULL AND f.fid = " + fid.ToString()));
             }
             catch
             {
@@ -174,7 +174,7 @@ namespace kartforandring
                 }
 
                 OleDbConnection con = GetOleDbConncection();
-                OleDbCommand com = new OleDbCommand(sqlStrings.sqlInsertLageskontroll(lageskontroll), con);
+                OleDbCommand com = new OleDbCommand(SqlStrings.sqlInsertLageskontroll(lageskontroll), con);
 
                 if (lageskontroll.AdressOmr != null || lageskontroll.Adress != null || lageskontroll.Fastighet != null)
                 {
@@ -293,7 +293,7 @@ namespace kartforandring
                 DataTable dt = new DataTable();
 
                 OleDbConnection con = GetOleDbConncection();
-                OleDbCommand com = new OleDbCommand(sqlStrings.sqlSelectBygglovsbeslut("AND f.fid = " + lageskontroll.Fid.ToString() + " "), con);
+                OleDbCommand com = new OleDbCommand(SqlStrings.sqlSelectBygglovsbeslut("AND f.fid = " + lageskontroll.Fid.ToString() + " "), con);
                 OleDbDataReader dr;
                 com.Connection.Open();
                 dr = com.ExecuteReader();
@@ -315,7 +315,7 @@ namespace kartforandring
                     throw new Exception("LKR-00006", new Exception("Ändringen kunde INTE genomföras. Databasen överensstämmer inte med tabell. Prova igen och om problemet återkommer kontakta MBK- och GIS-avdelningen (gis@landskrona.se)"));
                 }
 
-                com.CommandText = sqlStrings.sqlUpdateLageskontroll(lageskontroll);
+                com.CommandText = SqlStrings.sqlUpdateLageskontroll(lageskontroll);
 
                 int affectedRows = com.ExecuteNonQuery();
                 if (affectedRows > 0)

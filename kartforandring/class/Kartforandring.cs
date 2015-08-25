@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 
-namespace kartforandring
+namespace Kartforandring
 {
     /// <summary>
     /// Klass anpassad för att uppfylla javascript-ramverket jTable's JSON-specifikation.
