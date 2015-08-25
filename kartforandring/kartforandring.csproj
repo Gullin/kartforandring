@@ -331,7 +331,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="class\Kartforandring.DB.cs" />
     <Compile Include="class\Kartforandring.Utility.Regex.cs" />
-    <Compile Include="class\Kartforandring.sqlStrings.cs" />
+    <Compile Include="class\Kartforandring.SqlStrings.cs" />
     <Compile Include="class\Kartforandring.cs" />
     <Compile Include="class\Kartforandring.Geometry.cs" />
     <Compile Include="class\UtilityApplicationAssembly.cs" />
