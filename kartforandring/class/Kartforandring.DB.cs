@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using Kartforandring.Utility.Regex;
+using Kartforandring.Exceptions;
 
 namespace Kartforandring
 {
@@ -66,7 +67,7 @@ namespace Kartforandring
                 }
                 else
                 {
-                    throw new Exception("LKR-00002", new Exception("Bygglovet " + lageskontroll.Diarie.ToString() + " existerar redan."));
+                    throw new BygglovExistException(lageskontroll.Diarie.ToString());
                 }
             }
             catch
@@ -86,7 +87,7 @@ namespace Kartforandring
                 }
                 else
                 {
-                    throw new Exception("LKR-00004", new Exception("Uppdateringen av Bygglov " + lageskontroll.Diarie.ToString() + " kunde INTE genomföras. Posten verkar inte finnas i databas längre. Prova igen och om problemet återkommer kontakta MBK- och GIS-avdelningen (gis@landskrona.se)"));
+                    throw new UpdateException();
                 }
             }
             catch
@@ -151,7 +152,7 @@ namespace Kartforandring
             {
                 if (!Regex.IsMatch(lageskontroll.Diarie, Patterns.Diarie))
                 {
-                    throw new Exception("LKR-00007", new Exception("Diarie/aktbeteckning (" + lageskontroll.Diarie.ToString() + ") är i fel format. Ska bestå av ett årtal mellan 1900-2099, punkt och sedan löpnummer, tillåtet 1 - 4 tal (ÅÅÅÅ.####)."));
+                    throw new DiarieFormatException();
                 }
 
                 DataTable dt = new DataTable();
@@ -195,7 +196,7 @@ namespace Kartforandring
                     tmpDtFid.Load(tmpDrFid);
                     if (tmpDtFid.Rows.Count != 1) // Check if the DataTable returns any data from database
                     {
-                        throw new Exception("LKR-00005", new Exception("Kunde inte erhålla databasnyckel vid skapande av ny post (temp-ID: " + lageskontroll.tmpGuidKey.ToString() + ")."));
+                        throw new TempIdException();
                     } 
 
 
@@ -270,7 +271,7 @@ namespace Kartforandring
                 }
                 else
                 {
-                    throw new Exception("LKR-00001", new Exception("Ändringen kunde INTE genomföras. Prova igen och om problemet återkommer kontakta MBK- och GIS-avdelningen (gis@landskrona.se)"));
+                    throw new GeneralChangeException();
                 }
 
                 con.Close();
@@ -310,7 +311,7 @@ namespace Kartforandring
                 }
                 else
                 {
-                    throw new Exception("LKR-00006", new Exception("Ändringen kunde INTE genomföras. Databasen överensstämmer inte med tabell. Prova igen och om problemet återkommer kontakta MBK- och GIS-avdelningen (gis@landskrona.se)"));
+                    throw new ChangeException();
                 }
 
                 com.CommandText = SqlStrings.sqlUpdateLageskontroll(lageskontroll);
@@ -384,7 +385,7 @@ namespace Kartforandring
                 }
                 else
                 {
-                    throw new Exception("LKR-00001", new Exception("Ändringen kunde INTE genomföras. Prova igen och om problemet återkommer kontakta MBK- och GIS-avdelningen (gis@landskrona.se)"));
+                    throw new GeneralChangeException();
                 }
 
                 con.Close();
@@ -411,7 +412,7 @@ namespace Kartforandring
                 int affectedRows = com.ExecuteNonQuery();
                 if (affectedRows != 1)
                 {
-                    throw new Exception("LKR-00003", new Exception("Raderingen kunde INTE genomföras. Posten verkar inte finnas i databas längre. Prova igen och om problemet återkommer kontakta MBK- och GIS-avdelningen (gis@landskrona.se)"));
+                    throw new DeletionException();
                 }
             }
             catch
