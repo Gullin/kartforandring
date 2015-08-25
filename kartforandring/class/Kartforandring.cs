@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using Kartforandring.Utility.Regex;
 
 namespace Kartforandring
 {
@@ -61,7 +62,6 @@ namespace Kartforandring
                     {
                         // Konvertera objekt Bygglovsbeslut till objekt BygglovsbeslutDiarie
                         IList<BygglovsbeslutDiarie> sortingListBygglovsbeslutSplitDiarie = new List<BygglovsbeslutDiarie>();
-                        string diariePattern = @"^(19\d{2}\.\d{1,4})$|^(20\d{2}\.\d{1,4})$";
                         foreach (Bygglovsbeslut bygglovBeslut in currentListBygglovsbeslut)
                         {
                             Type tBB = bygglovBeslut.GetType();
@@ -79,7 +79,7 @@ namespace Kartforandring
                                         }
 
                                         string diarie = piBB.GetValue(bygglovBeslut).ToString();
-                                        if (System.Text.RegularExpressions.Regex.IsMatch(diarie, diariePattern))
+                                        if (System.Text.RegularExpressions.Regex.IsMatch(diarie, Patterns.Diarie))
                                         {
                                             string[] yearAndNbr = diarie.Split('.');
                                             if (piBBD.Name == "DiarieAr")

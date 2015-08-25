@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using Kartforandring.Utility.Regex;
 
 namespace Kartforandring
 {
@@ -148,8 +149,7 @@ namespace Kartforandring
         {
             try
             {
-                string patternDiarie = @"^(19\d{2}\.\d{1,4})$|^(20\d{2}\.\d{1,4})$";
-                if (!Regex.IsMatch(lageskontroll.Diarie, patternDiarie))
+                if (!Regex.IsMatch(lageskontroll.Diarie, Patterns.Diarie))
                 {
                     throw new Exception("LKR-00007", new Exception("Diarie/aktbeteckning (" + lageskontroll.Diarie.ToString() + ") är i fel format. Ska bestå av ett årtal mellan 1900-2099, punkt och sedan löpnummer, tillåtet 1 - 4 tal (ÅÅÅÅ.####)."));
                 }
@@ -158,17 +158,15 @@ namespace Kartforandring
                 lageskontroll.tmpGuidKey = Guid.NewGuid();
                 
                 // Kontrollera nycklar för adressområde, adressplats och fastighet. Sätts till null om ej stämmer
-                string regexpPatternGuid = @"^[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$";
-                string regexpPatternFastighet = @"^\d{9}$";
-                if(!Regex.IsMatch(lageskontroll.AdressOmr, regexpPatternGuid))
+                if(!Regex.IsMatch(lageskontroll.AdressOmr, Patterns.Guid))
                 {
                     lageskontroll.AdressOmr = null;
                 }
-                if (!Regex.IsMatch(lageskontroll.Adress, regexpPatternGuid))
+                if (!Regex.IsMatch(lageskontroll.Adress, Patterns.Guid))
                 {
                     lageskontroll.Adress = null;
                 }
-                if (!Regex.IsMatch(lageskontroll.Fastighet.ToString(), regexpPatternFastighet))
+                if (!Regex.IsMatch(lageskontroll.Fastighet.ToString(), Patterns.FastighetId))
                 {
                     lageskontroll.Fastighet = null;
                 }
