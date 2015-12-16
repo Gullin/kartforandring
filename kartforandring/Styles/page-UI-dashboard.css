@@ -1,0 +1,77 @@
+﻿#container {
+    text-align: center;
+    width: 100%;
+}
+
+#tabs > div {
+    padding: 1.5em 1em;
+    text-align: left;
+}
+
+.dashboardPart {
+    padding: 2em 1em;
+    border: 1px solid rgb(240,240,240);
+    position: relative;
+    margin: 1em;
+    width: 400px;
+    float: left;
+}
+
+.dashboardPartHeader {
+    position: absolute;
+    top: -0.75em;
+    left: 0.5em;
+    background-color: white;
+    line-height: 1.5em;
+    padding: 0em 1em;
+    color: #459e00;
+}
+.dashboardPartIcon {
+    position: absolute;
+    top: -0.75em;
+    right: 0.5em;
+    background-color: white;
+    line-height: 1.5em;
+    padding: 0em 1em;
+    color: #459e00;
+}
+
+.iconSetting {
+    color: #459e00;
+}
+
+.verifingHeaders {
+    font-weight: bold;
+}
+
+.verifingPart {
+    padding-left: 2em;
+}
+
+.VerifingLoadingImage {
+    position: absolute;
+    top: 2px;
+    left: -24px;
+}
+
+.verifingTdProcessImg {
+    width: 1em;
+}
+
+.error {
+    color: red;
+}
+
+.x {
+    font-size: 0.95em;
+    font-weight: bold;
+}
+
+.uncertain {
+    color: orange;
+}
+
+.ok {
+    color: green;
+    font-weight: bold;
+}

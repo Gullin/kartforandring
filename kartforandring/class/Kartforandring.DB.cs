@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using Kartforandring.Brister;
 
 namespace Kartforandring
 {
@@ -504,6 +505,8 @@ namespace Kartforandring
             return dt;
         }
 
+
+        
         internal static DataTable GetLageskontrollOrderingDomain()
         {
             string sql = "SELECT id, value FROM kar_bestallning_init_tbd ORDER BY value DESC";
@@ -624,6 +627,144 @@ namespace Kartforandring
 
             return dt;
         }
+
+
+
+        #region Brist
+        internal static DataTable GetAllBristGeometryIsNull()
+        {
+            return GetData(SqlBristStrings.geometryIsNull());
+        }
+        internal static DataTable GetAllBristUtforareIsNullWhenStarted()
+        {
+            return GetData(SqlBristStrings.utforareIsNullWhenStarted());
+        }
+        internal static DataTable GetAllBristDiarieIsNull()
+        {
+            return GetData(SqlBristStrings.diarieIsNull());
+        }
+        internal static DataTable GetAllBristDiarieWrongFormat()
+        {
+            return GetData(SqlBristStrings.diarieWrongFormat());
+        }
+        internal static DataTable GetAllBristObjTypNotInherited()
+        {
+            return GetData(SqlBristStrings.objTypNotInherited());
+        }
+        internal static DataTable GetAllBristObjIsNull()
+        {
+            return GetData(SqlBristStrings.objIsNull());
+        }
+        internal static DataTable GetAllBristTypIsNull()
+        {
+            return GetData(SqlBristStrings.typIsNull());
+        }
+        internal static DataTable GetAllBristBygglovMissingReason()
+        {
+            return GetData(SqlBristStrings.bygglovMissingReason());
+        }
+        internal static DataTable GetAllBristBygglovsbevakningarFinishNotDocumentedExecuted()
+        {
+            return GetData(SqlBristStrings.bygglovsbevakningarFinishNotDocumentedExecuted());
+        }
+        internal static DataTable GetAllBristBygglovRedundant()
+        {
+            return GetData(SqlBristStrings.bygglovRedundant());
+        }
+        internal static DataTable GetAllBristBestalldUtsattningNoBevakning()
+        {
+            return GetData(SqlBristStrings.bestalldUtsattningNoBevakning());
+        }
+        internal static DataTable GetAllBristBestalldLageskontrollNoBevakning()
+        {
+            return GetData(SqlBristStrings.bestalldLageskontrollNoBevakning());
+        }
+        #endregion
+
+
+
+        #region Varning
+        internal static DataTable GetAllVarningExternBestalldLageskontrollInTime()
+        {
+            return GetData(SqlBristStrings.externBestalldLageskontrollInTime());
+        }
+        internal static DataTable GetAllVarningExternBestalldLageskontrollInTime(int antalDagar)
+        {
+            return GetData(SqlBristStrings.externBestalldLageskontrollInTime(antalDagar));
+        }
+        internal static DataTable GetAllVarningInternBestalldLageskontrollInTime()
+        {
+            return GetData(SqlBristStrings.internBestalldLageskontrollInTime());
+        }
+        internal static DataTable GetAllVarningInternBestalldLageskontrollInTime(int antalDagar)
+        {
+            return GetData(SqlBristStrings.internBestalldLageskontrollInTime(antalDagar));
+        }
+        internal static DataTable GetAllVarningUtsattningWithLageskontrollUtfard()
+        {
+            return GetData(SqlBristStrings.utsattningWithLageskontrollUtfard());
+        }
+        internal static DataTable GetAllVarningLageskontrollUtfardAndamalNotUtfard()
+        {
+            return GetData(SqlBristStrings.lageskontrollUtfardAndamalNotUtfard());
+        }
+        internal static DataTable GetAllVarningLogisktRaderade()
+        {
+            return GetData(SqlBristStrings.logisktRaderade());
+        }
+        #endregion
+
+
+
+        #region Status
+        internal static DataTable GetAllStatusChangedSince()
+        {
+            return GetData(SqlBristStrings.changedSince());
+        }   
+        internal static DataTable GetAllStatusChangedSince(string DateFilter)
+        {
+            return GetData(SqlBristStrings.changedSince(DateFilter));
+        }
+        internal static DataTable GetAllStatusNbrOfChangesObjkod()
+        {
+            return GetData(SqlBristStrings.nbrOfChangesObjkod());
+        }
+        internal static DataTable GetAllStatusNbrOfChangesTypkod()
+        {
+            return GetData(SqlBristStrings.nbrOfChangesTypkod());
+        }
+        internal static DataTable GetAllStatusNbrTotal()
+        {
+            return GetData(SqlBristStrings.nbrTotal());
+        }
+        internal static DataTable GetAllStatusNbrAktiva()
+        {
+            return GetData(SqlBristStrings.nbrAktiva());
+        }
+        #endregion
+
+
+
+        #region Fel
+        internal static DataTable GetAllFelBygglovNoBygglovsbevakning()
+        {
+            return GetData(SqlBristStrings.bygglovNoBygglovsbevakning());
+        }
+        internal static DataTable GetAllFelBygglovsbevakningNoBygglov()
+        {
+            return GetData(SqlBristStrings.bygglovsbevakningNoBygglov());
+        }
+        internal static DataTable GetAllFelBestalldUtsattningNoBevakning()
+        {
+            return GetData(SqlBristStrings.bestalldUtsattningNoBevakning());
+        }
+        internal static DataTable GetAllFelBestalldLageskontrollNoBevakning()
+        {
+            return GetData(SqlBristStrings.bestalldLageskontrollNoBevakning());
+        }
+        #endregion
+
+
 
         /// <summary>
         /// Inserted empty row for possibility to not have value in a drop list.

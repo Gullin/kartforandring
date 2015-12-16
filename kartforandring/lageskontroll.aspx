@@ -26,7 +26,7 @@
     <script src='<%=ResolveClientUrl("Scripts/jtable/extensions/jquery.jtable.aspnetpagemethods.min.js")%>'></script>
     <script src='<%=ResolveClientUrl("Scripts/jtable/localization/jquery.jtable.se.js")%>'></script>
 
-    <script src='<%=ResolveClientUrl("Scripts/lageskontroll.js")%>'></script>
+    <script src='<%=ResolveClientUrl("Scripts/cg.lageskontroll.js")%>'></script>
 </head>
 
 <body>

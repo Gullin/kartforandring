@@ -19,6 +19,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,6 +73,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -133,11 +138,21 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tooltip.min.css" />
     <Content Include="dashboard.aspx" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
     <None Include="Properties\PublishProfiles\Kartförändring.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="kartforandring.aspx" />
     <Content Include="lageskontroll.aspx" />
+    <Content Include="pic\circularProcess.gif" />
     <Content Include="pic\positionNeedle\positionNeedle_00000.png" />
     <Content Include="pic\positionNeedle\positionNeedle_00001.png" />
     <Content Include="pic\positionNeedle\positionNeedle_00010.png" />
@@ -170,6 +185,12 @@
     <Content Include="pic\positionNeedle\positionNeedle_11101.png" />
     <Content Include="pic\positionNeedle\positionNeedle_11110.png" />
     <Content Include="pic\positionNeedle\positionNeedle_11111.png" />
+    <Content Include="pic\uiTabsArrow.png" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\cg.populate-chache.js" />
+    <Content Include="Scripts\cg.dashboard.js" />
+    <Content Include="Scripts\cg.lageskontroll.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
     <Content Include="Scripts\jquery-ui-1.9.2.js" />
@@ -284,8 +305,11 @@
     <Content Include="Scripts\jtable\themes\metro\red\jtable.css" />
     <Content Include="Scripts\jtable\themes\metro\red\jtable.min.css" />
     <Content Include="Scripts\jtable\themes\metro\red\loading.gif" />
-    <None Include="Settings.config" />
-    <Content Include="Scripts\lageskontroll.js" />
+    <None Include="Settings.config">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Scripts\spin.js\jquery.spin.js" />
+    <Content Include="Scripts\spin.js\spin-2.3.2.min.js" />
     <Content Include="Styles\jquery-ui-1.9.2.custom\css\smoothness\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Styles\jquery-ui-1.9.2.custom\css\smoothness\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Styles\jquery-ui-1.9.2.custom\css\smoothness\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -301,8 +325,11 @@
     <Content Include="Styles\jquery-ui-1.9.2.custom\css\smoothness\images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="Styles\jquery-ui-1.9.2.custom\css\smoothness\jquery-ui-1.9.2.custom.css" />
     <Content Include="Styles\jquery-ui-1.9.2.custom\css\smoothness\jquery-ui-1.9.2.custom.min.css" />
+    <Content Include="Styles\octicons-3.1.0\octicons.css" />
+    <Content Include="Styles\octicons-3.1.0\octicons.svg" />
     <Content Include="Styles\page-UI-centering.css" />
     <Content Include="Styles\page-UI-core.css" />
+    <Content Include="Styles\page-UI-dashboard.css" />
     <Content Include="Styles\page-UI-jTable.css" />
     <Content Include="Web.config" />
     <Content Include="Scripts\jquery-1.9.1.min.map" />
@@ -369,6 +396,15 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Styles\octicons-3.1.0\octicons-local.ttf" />
+    <Content Include="Styles\octicons-3.1.0\octicons.eot" />
+    <Content Include="Styles\octicons-3.1.0\octicons.less" />
+    <Content Include="Styles\octicons-3.1.0\octicons.scss" />
+    <Content Include="Styles\octicons-3.1.0\octicons.ttf" />
+    <Content Include="Styles\octicons-3.1.0\octicons.woff" />
+    <Content Include="Styles\octicons-3.1.0\README.md" />
+    <Content Include="Styles\octicons-3.1.0\sprockets-octicons.scss" />
+    <Content Include="Styles\cg.custom.jquery-ui.css" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

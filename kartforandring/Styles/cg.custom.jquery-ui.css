@@ -1,0 +1,49 @@
+﻿/* jQuery UI Tabs Customization*/
+#tabs {
+    background: transparent;
+    border: none;
+}
+
+    #tabs .ui-widget-header {
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid #c0c0c0;
+        -moz-border-radius: 0px;
+        -webkit-border-radius: 0px;
+        border-radius: 0px;
+        font-size: 1.1em;
+    }
+
+    #tabs .ui-tabs-nav .ui-state-default {
+        background: transparent;
+        border: none;
+    }
+
+    #tabs .ui-tabs-nav .ui-state-active {
+        background: transparent url(../pic/uiTabsArrow.png) no-repeat center bottom;
+        border: none;
+    }
+
+    #tabs .ui-tabs-nav .ui-state-default a {
+        color: #c0c0c0;
+    }
+
+    #tabs .ui-tabs-nav .ui-state-active a {
+        color: #459e00;
+        font-weight: bold;
+    }
+
+.ui-tabs .ui-tabs-nav li {
+    text-align: center;
+    float: left;
+}
+
+    .ui-tabs .ui-tabs-nav li a {
+        display: block;
+        padding: 1em;
+        text-decoration: none;
+    }
+
+.ui-widget-content {
+    border: none;
+}

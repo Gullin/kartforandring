@@ -664,4 +664,320 @@ namespace Kartforandring
     }
 
 
+
+    public class BristStat
+    {
+        public int Number { get; set; }
+        public int ValueId1 { get; set; }
+        public string ValueText1 { get; set; }
+        public int ValueId2 { get; set; }
+        public string ValueText2 { get; set; }
+
+        internal IList<BristStat> GetAllBristGeometryIsNull()
+        {
+            DataTable dt = DB.GetAllBristGeometryIsNull();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllBristUtforareIsNullWhenStarted()
+        {
+            DataTable dt = DB.GetAllBristUtforareIsNullWhenStarted();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllBristDiarieIsNull()
+        {
+            DataTable dt = DB.GetAllBristDiarieIsNull();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllBristDiarieWrongFormat()
+        {
+            DataTable dt = DB.GetAllBristDiarieWrongFormat();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllBristObjTypNotInherited()
+        {
+            DataTable dt = DB.GetAllBristObjTypNotInherited();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllBristObjIsNull()
+        {
+            DataTable dt = DB.GetAllBristObjIsNull();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllBristTypIsNull()
+        {
+            DataTable dt = DB.GetAllBristTypIsNull();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllBristBygglovMissingReason()
+        {
+            DataTable dt = DB.GetAllBristBygglovMissingReason();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllBristBygglovsbevakningarFinishNotDocumentedExecuted()
+        {
+            DataTable dt = DB.GetAllBristBygglovsbevakningarFinishNotDocumentedExecuted();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllBristBygglovRedundant()
+        {
+            DataTable dt = DB.GetAllBristBygglovRedundant();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllBristBestalldUtsattningNoBevakning()
+        {
+            DataTable dt = DB.GetAllBristBestalldUtsattningNoBevakning();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllBristBestalldLageskontrollNoBevakning()
+        {
+            DataTable dt = DB.GetAllBristBestalldLageskontrollNoBevakning();
+
+            return MakeList(dt);
+        }
+
+        internal IList<BristStat> GetAllVarningExternBestalldLageskontrollInTime()
+        {
+            DataTable dt = DB.GetAllVarningExternBestalldLageskontrollInTime();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllVarningExternBestalldLageskontrollInTime(int antalDagar)
+        {
+            DataTable dt = DB.GetAllVarningExternBestalldLageskontrollInTime(antalDagar);
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllVarningInternBestalldLageskontrollInTime()
+        {
+            DataTable dt = DB.GetAllVarningInternBestalldLageskontrollInTime();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllVarningInternBestalldLageskontrollInTime(int antalDagar)
+        {
+            DataTable dt = DB.GetAllVarningInternBestalldLageskontrollInTime(antalDagar);
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllVarningUtsattningWithLageskontrollUtfard()
+        {
+            DataTable dt = DB.GetAllVarningUtsattningWithLageskontrollUtfard();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllVarningLageskontrollUtfardAndamalNotUtfard()
+        {
+            DataTable dt = DB.GetAllVarningLageskontrollUtfardAndamalNotUtfard();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllVarningLogisktRaderade()
+        {
+            DataTable dt = DB.GetAllVarningLogisktRaderade();
+
+            return MakeList(dt);
+        }
+
+        internal IList<BristStat> GetAllStatusChangedSince()
+        {
+            DataTable dt = DB.GetAllStatusChangedSince();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllStatusChangedSince(string dateFilter)
+        {
+            DataTable dt = DB.GetAllStatusChangedSince(dateFilter);
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllStatusNbrOfChangesObjkod()
+        {
+            DataTable dt = DB.GetAllStatusNbrOfChangesObjkod();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllStatusNbrOfChangesTypkod()
+        {
+            DataTable dt = DB.GetAllStatusNbrOfChangesTypkod();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllStatusNbrTotal()
+        {
+            DataTable dt = DB.GetAllStatusNbrTotal();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllStatusNbrAktiva()
+        {
+            DataTable dt = DB.GetAllStatusNbrAktiva();
+
+            return MakeList(dt);
+        }
+
+        internal IList<BristStat> GetAllFelBygglovNoBygglovsbevakning()
+        {
+            DataTable dt = DB.GetAllFelBygglovNoBygglovsbevakning();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllFelBygglovsbevakningNoBygglov()
+        {
+            DataTable dt = DB.GetAllFelBygglovsbevakningNoBygglov();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllFelBestalldUtsattningNoBevakning()
+        {
+            DataTable dt = DB.GetAllFelBestalldUtsattningNoBevakning();
+
+            return MakeList(dt);
+        }
+        internal IList<BristStat> GetAllFelBestalldLageskontrollNoBevakning()
+        {
+            DataTable dt = DB.GetAllFelBestalldLageskontrollNoBevakning();
+
+            return MakeList(dt);
+        }
+
+
+        private IList<BristStat> MakeList(DataTable dt)
+        {
+            DataColumnCollection dcCollection = dt.Columns;
+            IList<BristStat> list = new List<BristStat>();
+            // Ordningen av if-satser är viktig eftersom samma kolumnnamn förekommer i 
+            if (dcCollection.Contains("OBJ_KOD") && dcCollection.Contains("TYP_KOD"))
+            {
+                foreach (DataRow row in dt.Rows)
+                    list.Add(MakeListItemNumberObjTyp(row));
+                return list;
+            }
+            if (dcCollection.Contains("OBJ_KOD"))
+            {
+                foreach (DataRow row in dt.Rows)
+                    list.Add(MakeListItemNumberObj(row));
+                return list;
+            }
+            if (dcCollection.Contains("DIGIT") && dcCollection.Contains("VALUE_TEXT"))
+            {
+                foreach (DataRow row in dt.Rows)
+                    list.Add(MakeListItemNumberValueText(row));
+                return list;
+            }
+            if (dcCollection.Contains("DIGIT"))
+            {
+                foreach (DataRow row in dt.Rows)
+                    list.Add(MakeListItemNumber(row));
+                return list;
+            }
+            else
+            {
+                throw new Exception("Ingen matchning av kolumner.");
+            }
+        }
+
+        private BristStat MakeListItemNumber(DataRow row)
+        {
+            BristStat Brist = new BristStat();
+            try
+            {
+                if (!Convert.IsDBNull(row["DIGIT"]))
+                {
+                    Brist.Number = int.Parse(row["DIGIT"].ToString());
+                }
+                return Brist;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        private BristStat MakeListItemNumberValueText(DataRow row)
+        {
+            BristStat Brist = new BristStat();
+            try
+            {
+                if (!Convert.IsDBNull(row["DIGIT"]))
+                {
+                    Brist.Number = int.Parse(row["DIGIT"].ToString());
+                }
+                if (!Convert.IsDBNull(row["VALUE_TEXT"]))
+                {
+                    Brist.ValueText1 = row["VALUE_TEXT"].ToString();
+                }
+                return Brist;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        private BristStat MakeListItemNumberObj(DataRow row)
+        {
+            BristStat Brist = new BristStat();
+            try
+            {
+                if (!Convert.IsDBNull(row["DIGIT"]))
+                {
+                    Brist.Number = int.Parse(row["DIGIT"].ToString());
+                }
+                if (!Convert.IsDBNull(row["OBJ_KOD"]))
+                {
+                    Brist.ValueId1 = int.Parse(row["OBJ_KOD"].ToString());
+                }
+                if (!Convert.IsDBNull(row["OBJ_VALUE"]))
+                {
+                    Brist.ValueText1 = row["OBJ_VALUE"].ToString();
+                }
+                return Brist;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        private BristStat MakeListItemNumberObjTyp(DataRow row)
+        {
+            BristStat Brist = new BristStat();
+            try
+            {
+                if (!Convert.IsDBNull(row["DIGIT"]))
+                {
+                    Brist.Number = int.Parse(row["DIGIT"].ToString());
+                }
+                if (!Convert.IsDBNull(row["OBJ_KOD"]))
+                {
+                    Brist.ValueId1 = int.Parse(row["OBJ_KOD"].ToString());
+                }
+                if (!Convert.IsDBNull(row["OBJ_VALUE"]))
+                {
+                    Brist.ValueText1 = row["OBJ_VALUE"].ToString();
+                }
+                if (!Convert.IsDBNull(row["TYP_KOD"]))
+                {
+                    Brist.ValueId2 = int.Parse(row["TYP_KOD"].ToString());
+                }
+                if (!Convert.IsDBNull(row["TYP_VALUE"]))
+                {
+                    Brist.ValueText2 = row["TYP_VALUE"].ToString();
+                }
+                return Brist;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+    }
 }
